@@ -4,8 +4,8 @@
 
 ### Docentes
 - **Jefe de Cátedra:** Diego Essaya  
-- **Jefe de Trabajos Prácticos:** [Nombre del Jefe]  
-- **Corrector:** [Nombre del Corrector]  
+- **Jefe de Trabajos Prácticos:** ...
+- **Corrector:** ...  
 
 ### Integrantes del Grupo
 - Eduardo Morales  
