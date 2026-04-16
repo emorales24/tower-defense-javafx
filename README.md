@@ -4,7 +4,7 @@
 
 ### Docentes
 - **Jefe de Cátedra:** Diego Essaya  
-- **Jefe de Trabajos Prácticos:** ...
+- **Jefe de Trabajos Prácticos:** Santiago Maraggi
 - **Corrector:** ...  
 
 ### Integrantes del Grupo
