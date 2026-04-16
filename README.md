@@ -8,8 +8,8 @@
 - **Corrector:** ...  
 
 ### Integrantes del Grupo
-- Eduardo Morales  
-- Fausto Giannotti  
+- Eduardo Morales 113860
+- Fausto Giannotti  113365
 
 ---
 
