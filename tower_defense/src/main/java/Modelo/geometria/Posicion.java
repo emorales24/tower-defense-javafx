@@ -24,6 +24,9 @@ public class Posicion {
         return Math.sqrt(diferenciaX * diferenciaX + diferenciaY * diferenciaY);
     }
 
+    /**
+     * Mueve hacia destino la posición actual en la distancia dada
+     */
     public Posicion moverHacia(Posicion destino, double distancia) {
         if (distancia < 0) {
             throw new IllegalArgumentException("La distancia no puede ser negativa");
