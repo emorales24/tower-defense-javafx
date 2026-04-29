@@ -8,11 +8,11 @@ public class Escenario {
     private final double ancho;
     private final double alto;
     private final Ruta ruta;
-    private final Base baseEnemiga;
+    private final Posicion puntoSpawn;
     private final Base baseJugador;
     private final List<Slot> slots;
 
-    public Escenario(double ancho, double alto, Ruta ruta, Base baseEnemiga, Base baseJugador, List<Slot> slots) {
+    public Escenario(double ancho, double alto, Ruta ruta, Posicion puntoSpawn, Base baseJugador, List<Slot> slots) {
         if (Double.isNaN(ancho) || Double.isInfinite(ancho) || ancho <= 0) {
             throw new IllegalArgumentException("El ancho debe ser positivo y finito");
         }
@@ -21,19 +21,20 @@ public class Escenario {
             throw new IllegalArgumentException("El alto debe ser positivo y finito");
         }
 
-        if (ruta == null || baseEnemiga == null || baseJugador == null || slots == null) {
+        if (ruta == null || puntoSpawn == null || baseJugador == null || slots == null) {
             throw new IllegalArgumentException("Los componentes del escenario no pueden ser null");
         }
 
         this.ancho = ancho;
         this.alto = alto;
         this.ruta = ruta;
-        this.baseEnemiga = baseEnemiga;
+        this.puntoSpawn = puntoSpawn;
         this.baseJugador = baseJugador;
         this.slots = List.copyOf(slots);
 
         validarElementosDentroDelEscenario();
-        validarCoherenciaEntreBasesYRuta();
+        validarCoherenciaEntreSpawnYRuta();
+        validarSlotsFueraDeRuta();
     }
 
     public double obtenerAncho() {
@@ -48,8 +49,8 @@ public class Escenario {
         return ruta;
     }
 
-    public Base obtenerBaseEnemiga() {
-        return baseEnemiga;
+    public Posicion obtenerPuntoSpawn() {
+        return puntoSpawn;
     }
 
     public Base obtenerBaseJugador() {
@@ -80,8 +81,8 @@ public class Escenario {
     }
 
     private void validarElementosDentroDelEscenario() {
-        if (!contiene(baseEnemiga.obtenerPosicion()) || !contiene(baseJugador.obtenerPosicion())) {
-            throw new IllegalArgumentException("Las bases deben estar dentro del escenario");
+        if (!contiene(puntoSpawn) || !contiene(baseJugador.obtenerPosicion())) {
+            throw new IllegalArgumentException("El punto de spawn y la base del jugador deben estar dentro del escenario");
         }
 
         for (Posicion punto : ruta.obtenerPuntos()) {
@@ -97,12 +98,12 @@ public class Escenario {
         }
     }
 
-    private void validarCoherenciaEntreBasesYRuta() {
+    private void validarCoherenciaEntreSpawnYRuta() {
         Posicion inicio = ruta.obtenerInicio();
         Posicion fin = ruta.obtenerFin();
 
-        if (!mismaPosicion(inicio, baseEnemiga.obtenerPosicion())) {
-            throw new IllegalArgumentException("La ruta debe iniciar en la base enemiga");
+        if (!mismaPosicion(inicio, puntoSpawn)) {
+            throw new IllegalArgumentException("La ruta debe iniciar en el punto de spawn");
         }
 
         if (!mismaPosicion(fin, baseJugador.obtenerPosicion())) {
@@ -112,5 +113,61 @@ public class Escenario {
 
     private boolean mismaPosicion(Posicion una, Posicion otra) {
         return una.obtenerX() == otra.obtenerX() && una.obtenerY() == otra.obtenerY();
+    }
+
+    private void validarSlotsFueraDeRuta() {
+        for (Slot slot : slots) {
+            if (slotColisionaConRuta(slot)) {
+                throw new IllegalArgumentException("Los slots no pueden colisionar con la ruta");
+            }
+        }
+    }
+
+    private boolean slotColisionaConRuta(Slot slot) {
+        List<Posicion> puntos = ruta.obtenerPuntos();
+        double distanciaMinima = ruta.obtenerAncho() / 2 + obtenerMediaDiagonal(slot);
+
+        for (int i = 0; i < puntos.size() - 1; i++) {
+            double distancia = distanciaDePuntoASegmento(
+                    slot.obtenerPosicion(),
+                    puntos.get(i),
+                    puntos.get(i + 1)
+            );
+
+            if (distancia <= distanciaMinima) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private double obtenerMediaDiagonal(Slot slot) {
+        double medioAncho = slot.obtenerDimension().obtenerAncho() / 2;
+        double medioAlto = slot.obtenerDimension().obtenerAlto() / 2;
+        return Math.sqrt(medioAncho * medioAncho + medioAlto * medioAlto);
+    }
+
+    private double distanciaDePuntoASegmento(Posicion punto, Posicion inicio, Posicion fin) {
+        double segmentoX = fin.obtenerX() - inicio.obtenerX();
+        double segmentoY = fin.obtenerY() - inicio.obtenerY();
+        double largoSegmentoCuadrado = segmentoX * segmentoX + segmentoY * segmentoY;
+
+        if (largoSegmentoCuadrado == 0) {
+            return punto.distanciaA(inicio);
+        }
+
+        double proporcion = (
+                (punto.obtenerX() - inicio.obtenerX()) * segmentoX
+                        + (punto.obtenerY() - inicio.obtenerY()) * segmentoY
+        ) / largoSegmentoCuadrado;
+
+        double proporcionAcotada = Math.max(0, Math.min(1, proporcion));
+        Posicion puntoMasCercano = new Posicion(
+                inicio.obtenerX() + proporcionAcotada * segmentoX,
+                inicio.obtenerY() + proporcionAcotada * segmentoY
+        );
+
+        return punto.distanciaA(puntoMasCercano);
     }
 }
