@@ -71,7 +71,6 @@ public class Nivel {
         cargarTorretasIniciales();
         spawnsPendientes.clear();
         spawnsPendientes.addAll(spawnsConfigurados);
-        escenario.obtenerBaseEnemiga().reiniciarVida();
         escenario.obtenerBaseJugador().reiniciarVida();
         jugador.establecerDineroDisponible(dineroInicial);
         tiempoTranscurrido = 0;
