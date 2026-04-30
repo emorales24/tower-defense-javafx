@@ -11,14 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class App extends Application {
-    private static final double ANCHO_VENTANA = 800;
-    private static final double ALTO_VENTANA = 600;
-
     @Override
     public void start(Stage stage) {
         try {
             Juego juego = new CargadorJuegoXml().cargar();
-            juego.iniciar();
             mostrarJuegoCargado(stage, juego);
         } catch (CargaNivelException | IllegalArgumentException e) {
             mostrarError(stage, e.getMessage());
@@ -26,16 +22,9 @@ public class App extends Application {
     }
 
     private void mostrarJuegoCargado(Stage stage, Juego juego) {
-        VBox contenedor = crearContenedor();
-        contenedor.getChildren().addAll(
-                new Label("Tower Defense"),
-                new Label("Estado: " + juego.obtenerEstado()),
-                new Label("Nivel actual: " + (juego.obtenerIndiceNivelActual() + 1)),
-                new Label("Niveles cargados: " + juego.obtenerNiveles().size()),
-                new Label("Dinero inicial: " + juego.obtenerJugador().obtenerDineroDisponible())
-        );
-
-        configurarStage(stage, new Scene(contenedor, ANCHO_VENTANA, ALTO_VENTANA));
+        VistaJuego vistaJuego = new VistaJuego(juego);
+        configurarStage(stage, new Scene(vistaJuego.obtenerRaiz(), vistaJuego.obtenerAncho(), vistaJuego.obtenerAlto()));
+        vistaJuego.iniciar();
     }
 
     private void mostrarError(Stage stage, String mensaje) {
@@ -45,7 +34,7 @@ public class App extends Application {
                 new Label(mensaje)
         );
 
-        configurarStage(stage, new Scene(contenedor, ANCHO_VENTANA, ALTO_VENTANA));
+        configurarStage(stage, new Scene(contenedor, 800, 600));
     }
 
     private VBox crearContenedor() {
