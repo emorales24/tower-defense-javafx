@@ -1,11 +1,6 @@
 package Modelo.nivel;
 
-import Modelo.enemigo.Enemigo;
-import Modelo.enemigo.EnemigoDebil;
-import Modelo.enemigo.EnemigoFuerte;
-import Modelo.enemigo.EnemigoMedio;
 import Modelo.enemigo.TipoEnemigo;
-import Modelo.escena.Ruta;
 
 public class SpawnEnemigos {
     private final TipoEnemigo tipoEnemigo;
@@ -34,18 +29,5 @@ public class SpawnEnemigos {
 
     public boolean debeAparecer(double tiempoTranscurrido) {
         return tiempoTranscurrido >= tiempoAparicion;
-    }
-
-    public Enemigo crearEnemigo(Ruta ruta) {
-        switch (tipoEnemigo) {
-            case DEBIL:
-                return new EnemigoDebil(ruta);
-            case MEDIO:
-                return new EnemigoMedio(ruta);
-            case FUERTE:
-                return new EnemigoFuerte(ruta);
-            default:
-                throw new IllegalStateException("Tipo de enemigo no soportado");
-        }
     }
 }
