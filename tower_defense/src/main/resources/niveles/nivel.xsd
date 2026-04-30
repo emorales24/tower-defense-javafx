@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:simpleType name="nonNegativeDecimal">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="positiveDecimal">
+        <xs:restriction base="xs:decimal">
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="positiveInt">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tipoEnemigo">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DEBIL"/>
+            <xs:enumeration value="MEDIO"/>
+            <xs:enumeration value="FUERTE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tipoTorreta">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SIMPLE"/>
+            <xs:enumeration value="RAPIDA"/>
+            <xs:enumeration value="POTENTE"/>
+            <xs:enumeration value="DISTANTE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="puntoType">
+        <xs:attribute name="x" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="y" type="nonNegativeDecimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="baseJugadorType">
+        <xs:attribute name="x" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="y" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="vida" type="positiveDecimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="puntoRutaType">
+        <xs:attribute name="orden" type="positiveInt" use="required"/>
+        <xs:attribute name="x" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="y" type="nonNegativeDecimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="rutaType">
+        <xs:sequence>
+            <xs:element name="punto" type="puntoRutaType" minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="ancho" type="positiveDecimal" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="slotType">
+        <xs:attribute name="x" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="y" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="ancho" type="positiveDecimal" use="optional"/>
+        <xs:attribute name="alto" type="positiveDecimal" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="slotsType">
+        <xs:sequence>
+            <xs:element name="slot" type="slotType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="enemigoType">
+        <xs:attribute name="tipo" type="tipoEnemigo" use="required"/>
+        <xs:attribute name="tiempo" type="nonNegativeDecimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="enemigosType">
+        <xs:sequence>
+            <xs:element name="enemigo" type="enemigoType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="torretaType">
+        <xs:attribute name="slotX" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="slotY" type="nonNegativeDecimal" use="required"/>
+        <xs:attribute name="tipo" type="tipoTorreta" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="torretasInicialesType">
+        <xs:sequence>
+            <xs:element name="torreta" type="torretaType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="nivel">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="spawn" type="puntoType"/>
+                <xs:element name="baseJugador" type="baseJugadorType"/>
+                <xs:element name="ruta" type="rutaType"/>
+                <xs:element name="slots" type="slotsType"/>
+                <xs:element name="enemigos" type="enemigosType"/>
+                <xs:element name="torretasIniciales" type="torretasInicialesType" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="ancho" type="positiveDecimal" use="required"/>
+            <xs:attribute name="alto" type="positiveDecimal" use="required"/>
+            <xs:attribute name="dineroInicial" type="nonNegativeDecimal" use="required"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+

@@ -40,7 +40,7 @@ public class Nivel {
             Jugador jugador,
             double dineroInicial,
             List<SpawnEnemigos> spawnsConfigurados,
-            Map<Slot, Torreta> torretasIniciales
+            Map<Slot, TipoTorreta> torretasIniciales
     ) {
         if (escenario == null || jugador == null || spawnsConfigurados == null || torretasIniciales == null) {
             throw new IllegalArgumentException("El nivel requiere escenario, jugador, spawns y torretas iniciales");
@@ -54,7 +54,7 @@ public class Nivel {
         this.jugador = jugador;
         this.dineroInicial = dineroInicial;
         this.spawnsConfigurados = List.copyOf(spawnsConfigurados);
-        this.torretasInicialesConfiguradas = convertirTorretasIniciales(torretasIniciales);
+        this.torretasInicialesConfiguradas = copiarTorretasIniciales(torretasIniciales);
         this.fabricaEnemigo = new FabricaEnemigo();
         this.fabricaTorreta = new FabricaTorreta();
         this.enemigosActivos = new ArrayList<>();
@@ -107,10 +107,6 @@ public class Nivel {
 
         if (!escenario.contiene(slot)) {
             throw new IllegalArgumentException("El slot no pertenece al escenario");
-        }
-
-        if (torretasInstaladas.containsKey(slot)) {
-            return false;
         }
 
         Torreta nuevaTorreta = crearTorreta(tipoTorreta, slot);
@@ -233,18 +229,18 @@ public class Nivel {
         }
     }
 
-    private Map<Slot, TipoTorreta> convertirTorretasIniciales(Map<Slot, Torreta> torretasIniciales) {
-        Map<Slot, TipoTorreta> tipos = new LinkedHashMap<>();
+    private Map<Slot, TipoTorreta> copiarTorretasIniciales(Map<Slot, TipoTorreta> torretasIniciales) {
+        Map<Slot, TipoTorreta> copia = new LinkedHashMap<>();
 
-        for (Map.Entry<Slot, Torreta> entrada : torretasIniciales.entrySet()) {
+        for (Map.Entry<Slot, TipoTorreta> entrada : torretasIniciales.entrySet()) {
             if (entrada.getKey() == null || entrada.getValue() == null) {
                 throw new IllegalArgumentException("Las torretas iniciales no pueden tener claves o valores null");
             }
 
-            tipos.put(entrada.getKey(), entrada.getValue().obtenerTipo());
+            copia.put(entrada.getKey(), entrada.getValue());
         }
 
-        return Map.copyOf(tipos);
+        return Map.copyOf(copia);
     }
 
     private void cargarTorretasIniciales() {
