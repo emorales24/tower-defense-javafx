@@ -3,16 +3,14 @@ package Modelo.nivel;
 import Modelo.Actualizable;
 import Modelo.Jugador;
 import Modelo.enemigo.Enemigo;
+import Modelo.enemigo.FabricaEnemigo;
 import Modelo.escena.Base;
 import Modelo.escena.Escenario;
 import Modelo.escena.Slot;
 import Modelo.proyectil.Proyectil;
+import Modelo.torreta.FabricaTorreta;
 import Modelo.torreta.TipoTorreta;
 import Modelo.torreta.Torreta;
-import Modelo.torreta.TorretaDistante;
-import Modelo.torreta.TorretaPotente;
-import Modelo.torreta.TorretaRapida;
-import Modelo.torreta.TorretaSimple;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,6 +24,8 @@ public class Nivel {
     private final double dineroInicial;
     private final List<SpawnEnemigos> spawnsConfigurados;
     private final Map<Slot, TipoTorreta> torretasInicialesConfiguradas;
+    private final FabricaEnemigo fabricaEnemigo;
+    private final FabricaTorreta fabricaTorreta;
 
     private final List<Enemigo> enemigosActivos;
     private final List<Proyectil> proyectilesActivos;
@@ -40,7 +40,7 @@ public class Nivel {
             Jugador jugador,
             double dineroInicial,
             List<SpawnEnemigos> spawnsConfigurados,
-            Map<Slot, Torreta> torretasIniciales
+            Map<Slot, TipoTorreta> torretasIniciales
     ) {
         if (escenario == null || jugador == null || spawnsConfigurados == null || torretasIniciales == null) {
             throw new IllegalArgumentException("El nivel requiere escenario, jugador, spawns y torretas iniciales");
@@ -54,7 +54,9 @@ public class Nivel {
         this.jugador = jugador;
         this.dineroInicial = dineroInicial;
         this.spawnsConfigurados = List.copyOf(spawnsConfigurados);
-        this.torretasInicialesConfiguradas = convertirTorretasIniciales(torretasIniciales);
+        this.torretasInicialesConfiguradas = copiarTorretasIniciales(torretasIniciales);
+        this.fabricaEnemigo = new FabricaEnemigo();
+        this.fabricaTorreta = new FabricaTorreta();
         this.enemigosActivos = new ArrayList<>();
         this.proyectilesActivos = new ArrayList<>();
         this.torretasInstaladas = new LinkedHashMap<>();
@@ -155,7 +157,7 @@ public class Nivel {
 
         for (SpawnEnemigos spawn : spawnsPendientes) {
             if (spawn.debeAparecer(tiempoTranscurrido)) {
-                enemigosActivos.add(spawn.crearEnemigo(escenario.obtenerRuta()));
+                enemigosActivos.add(fabricaEnemigo.crear(spawn.obtenerTipoEnemigo(), escenario.obtenerRuta()));
                 spawnsAEliminar.add(spawn);
             }
         }
@@ -227,18 +229,18 @@ public class Nivel {
         }
     }
 
-    private Map<Slot, TipoTorreta> convertirTorretasIniciales(Map<Slot, Torreta> torretasIniciales) {
-        Map<Slot, TipoTorreta> tipos = new LinkedHashMap<>();
+    private Map<Slot, TipoTorreta> copiarTorretasIniciales(Map<Slot, TipoTorreta> torretasIniciales) {
+        Map<Slot, TipoTorreta> copia = new LinkedHashMap<>();
 
-        for (Map.Entry<Slot, Torreta> entrada : torretasIniciales.entrySet()) {
+        for (Map.Entry<Slot, TipoTorreta> entrada : torretasIniciales.entrySet()) {
             if (entrada.getKey() == null || entrada.getValue() == null) {
                 throw new IllegalArgumentException("Las torretas iniciales no pueden tener claves o valores null");
             }
 
-            tipos.put(entrada.getKey(), entrada.getValue().obtenerTipo());
+            copia.put(entrada.getKey(), entrada.getValue());
         }
 
-        return Map.copyOf(tipos);
+        return Map.copyOf(copia);
     }
 
     private void cargarTorretasIniciales() {
@@ -248,17 +250,6 @@ public class Nivel {
     }
 
     private Torreta crearTorreta(TipoTorreta tipoTorreta, Slot slot) {
-        switch (tipoTorreta) {
-            case SIMPLE:
-                return new TorretaSimple(slot.obtenerPosicion());
-            case RAPIDA:
-                return new TorretaRapida(slot.obtenerPosicion());
-            case POTENTE:
-                return new TorretaPotente(slot.obtenerPosicion());
-            case DISTANTE:
-                return new TorretaDistante(slot.obtenerPosicion());
-            default:
-                throw new IllegalStateException("Tipo de torreta no soportado");
-        }
+        return fabricaTorreta.crear(tipoTorreta, slot.obtenerPosicion());
     }
 }

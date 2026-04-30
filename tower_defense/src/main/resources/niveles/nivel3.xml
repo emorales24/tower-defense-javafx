@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nivel ancho="800" alto="600" dineroInicial="300">
+    <spawn x="0" y="520"/>
+    <baseJugador x="760" y="80" vida="30"/>
+
+    <ruta ancho="32">
+        <punto orden="1" x="0" y="520"/>
+        <punto orden="2" x="160" y="520"/>
+        <punto orden="3" x="160" y="260"/>
+        <punto orden="4" x="420" y="260"/>
+        <punto orden="5" x="420" y="80"/>
+        <punto orden="6" x="760" y="80"/>
+    </ruta>
+
+    <slots>
+        <slot x="80" y="450" ancho="32" alto="32"/>
+        <slot x="240" y="330" ancho="32" alto="32"/>
+        <slot x="340" y="200" ancho="32" alto="32"/>
+        <slot x="500" y="150" ancho="32" alto="32"/>
+        <slot x="650" y="40" ancho="32" alto="32"/>
+        <slot x="650" y="150" ancho="32" alto="32"/>
+    </slots>
+
+    <enemigos>
+        <enemigo tipo="MEDIO" tiempo="0"/>
+        <enemigo tipo="DEBIL" tiempo="0.5"/>
+        <enemigo tipo="MEDIO" tiempo="2"/>
+        <enemigo tipo="FUERTE" tiempo="4"/>
+        <enemigo tipo="FUERTE" tiempo="6"/>
+        <enemigo tipo="FUERTE" tiempo="9"/>
+    </enemigos>
+
+    <torretasIniciales>
+        <torreta slotX="240" slotY="330" tipo="RAPIDA"/>
+    </torretasIniciales>
+</nivel>

@@ -5,11 +5,19 @@ public class Caja {
     private final Dimension dimension;
 
     public Caja(Posicion centro, Dimension dimension) {
+        if (centro == null || dimension == null) {
+            throw new IllegalArgumentException("La caja requiere centro y dimension");
+        }
+
         this.centro = centro;
         this.dimension = dimension;
     }
 
     public boolean intersecta(Caja otra) {
+        if (otra == null) {
+            throw new IllegalArgumentException("La caja no puede ser null");
+        }
+
         return izquierda() <= otra.derecha()
                 && derecha() >= otra.izquierda()
                 && arriba() <= otra.abajo()
@@ -17,6 +25,10 @@ public class Caja {
     }
 
     public boolean contiene(Posicion posicion) {
+        if (posicion == null) {
+            throw new IllegalArgumentException("La posicion no puede ser null");
+        }
+
         return posicion.obtenerX() >= izquierda()
                 && posicion.obtenerX() <= derecha()
                 && posicion.obtenerY() >= arriba()
