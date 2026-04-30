@@ -107,6 +107,10 @@ public class Nivel {
             throw new IllegalArgumentException("El slot no pertenece al escenario");
         }
 
+        if (torretasInstaladas.containsKey(slot)) {
+            return false;
+        }
+
         Torreta nuevaTorreta = crearTorreta(tipoTorreta, slot);
 
         if (!jugador.puedeComprar(nuevaTorreta.obtenerCosto())) {
