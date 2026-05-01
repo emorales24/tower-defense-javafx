@@ -43,12 +43,21 @@ public class Juego {
             if (indiceNivelActual == niveles.size() - 1) {
                 estado = EstadoJuego.VICTORIA_FINAL;
             } else {
-                indiceNivelActual++;
-                obtenerNivelActual().iniciar();
+                estado = EstadoJuego.VICTORIA_NIVEL;
             }
         } else if (nivelActual.obtenerEstado() == EstadoNivel.PERDIDO) {
             estado = EstadoJuego.DERROTA;
         }
+    }
+
+    public void avanzarAlSiguienteNivel() {
+        if (estado != EstadoJuego.VICTORIA_NIVEL) {
+            throw new IllegalStateException("Solo se puede avanzar despues de ganar un nivel");
+        }
+
+        indiceNivelActual++;
+        obtenerNivelActual().iniciar();
+        estado = EstadoJuego.EN_CURSO;
     }
 
     public Jugador obtenerJugador() {

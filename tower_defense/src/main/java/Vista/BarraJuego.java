@@ -1,0 +1,123 @@
+package Vista;
+
+import Modelo.Juego;
+import Modelo.torreta.TipoTorreta;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+public class BarraJuego {
+    private static final double ALTO = 48;
+
+    private final HBox raiz;
+    private final Label estado;
+    private final Label dinero;
+    private final Label puntaje;
+    private final Label seleccion;
+    private final Label mensaje;
+    private final Map<TipoTorreta, Button> botones;
+    private TipoTorreta tipoSeleccionado;
+
+    public BarraJuego(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+        if (alSeleccionarTorreta == null || alReiniciarNivel == null || alVolverAlMenu == null) {
+            throw new IllegalArgumentException("La accion de seleccion no puede ser null");
+        }
+
+        this.estado = new Label();
+        this.dinero = new Label();
+        this.puntaje = new Label();
+        this.seleccion = new Label();
+        this.mensaje = new Label();
+        this.botones = new EnumMap<>(TipoTorreta.class);
+        this.tipoSeleccionado = TipoTorreta.SIMPLE;
+        this.raiz = crearRaiz(alSeleccionarTorreta, alReiniciarNivel, alVolverAlMenu);
+        actualizarBotones();
+    }
+
+    public HBox obtenerRaiz() {
+        return raiz;
+    }
+
+    public double obtenerAlto() {
+        return ALTO;
+    }
+
+    public TipoTorreta obtenerTipoSeleccionado() {
+        return tipoSeleccionado;
+    }
+
+    public void actualizar(Juego juego) {
+        estado.setText("Estado: " + juego.obtenerEstado() + " | Nivel " + (juego.obtenerIndiceNivelActual() + 1));
+        dinero.setText("Dinero: " + juego.obtenerJugador().obtenerDineroDisponible());
+        puntaje.setText("Puntaje: " + juego.obtenerJugador().obtenerPuntajeAcumulado());
+        seleccion.setText("Seleccion: " + tipoSeleccionado);
+    }
+
+    public void mostrarMensaje(String texto) {
+        mensaje.setText(texto);
+    }
+
+    private HBox crearRaiz(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+        HBox barra = new HBox(16);
+        barra.setMinHeight(ALTO);
+        barra.setPrefHeight(ALTO);
+        barra.setStyle("-fx-padding: 12; -fx-background-color: #20242a; -fx-text-fill: white;");
+
+        estado.setTextFill(Color.WHITE);
+        dinero.setTextFill(Color.WHITE);
+        puntaje.setTextFill(Color.WHITE);
+        seleccion.setTextFill(Color.WHITE);
+        mensaje.setTextFill(Color.WHITE);
+
+        barra.getChildren().addAll(
+                estado,
+                dinero,
+                puntaje,
+                seleccion,
+                crearBotonTorreta("Simple", TipoTorreta.SIMPLE, alSeleccionarTorreta),
+                crearBotonTorreta("Rapida", TipoTorreta.RAPIDA, alSeleccionarTorreta),
+                crearBotonTorreta("Potente", TipoTorreta.POTENTE, alSeleccionarTorreta),
+                crearBotonTorreta("Distante", TipoTorreta.DISTANTE, alSeleccionarTorreta),
+                crearBotonAccion("Reiniciar", alReiniciarNivel),
+                crearBotonAccion("Menu", alVolverAlMenu),
+                mensaje
+        );
+
+        return barra;
+    }
+
+    private Button crearBotonTorreta(String texto, TipoTorreta tipo, Consumer<TipoTorreta> alSeleccionarTorreta) {
+        Button boton = new Button(texto);
+        boton.setFocusTraversable(false);
+        boton.setOnAction(evento -> {
+            tipoSeleccionado = tipo;
+            mensaje.setText("");
+            actualizarBotones();
+            alSeleccionarTorreta.accept(tipo);
+        });
+        botones.put(tipo, boton);
+        return boton;
+    }
+
+    private Button crearBotonAccion(String texto, Runnable accion) {
+        Button boton = new Button(texto);
+        boton.setFocusTraversable(false);
+        boton.setOnAction(evento -> accion.run());
+        return boton;
+    }
+
+    private void actualizarBotones() {
+        for (Map.Entry<TipoTorreta, Button> entrada : botones.entrySet()) {
+            if (entrada.getKey() == tipoSeleccionado) {
+                entrada.getValue().setStyle("-fx-background-color: #f5f0a6; -fx-text-fill: #20242a;");
+            } else {
+                entrada.getValue().setStyle("");
+            }
+        }
+    }
+}
