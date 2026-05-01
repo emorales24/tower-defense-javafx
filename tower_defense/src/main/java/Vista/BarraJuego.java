@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 public class BarraJuego {
     private static final double ALTO = 48;
     private static final double ANCHO_BOTON_TORRETA = 36;
+    private static final double ANCHO_BOTON_AUDIO = 58;
     private static final double ANCHO_BOTON_REINICIAR = 82;
     private static final double ANCHO_BOTON_MENU = 62;
 
@@ -26,11 +27,13 @@ public class BarraJuego {
     private final Label puntaje;
     private final Label seleccion;
     private final Label mensaje;
+    private final Button botonAudio;
     private final Map<TipoTorreta, Button> botones;
     private TipoTorreta tipoSeleccionado;
+    private boolean audioMuteado;
 
-    public BarraJuego(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
-        if (alSeleccionarTorreta == null || alReiniciarNivel == null || alVolverAlMenu == null) {
+    public BarraJuego(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alAlternarAudio, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+        if (alSeleccionarTorreta == null || alAlternarAudio == null || alReiniciarNivel == null || alVolverAlMenu == null) {
             throw new IllegalArgumentException("La accion de seleccion no puede ser null");
         }
 
@@ -39,8 +42,10 @@ public class BarraJuego {
         this.puntaje = new Label();
         this.seleccion = new Label();
         this.mensaje = new Label();
+        this.botonAudio = crearBotonAccion("Audio", "Mutear audio", ANCHO_BOTON_AUDIO, alAlternarAudio);
         this.botones = new EnumMap<>(TipoTorreta.class);
         this.tipoSeleccionado = TipoTorreta.SIMPLE;
+        this.audioMuteado = false;
         this.raiz = crearRaiz(alSeleccionarTorreta, alReiniciarNivel, alVolverAlMenu);
         actualizarBotones();
     }
@@ -66,6 +71,12 @@ public class BarraJuego {
 
     public void mostrarMensaje(String texto) {
         mensaje.setText(texto);
+    }
+
+    public void actualizarAudio(boolean muteado) {
+        audioMuteado = muteado;
+        botonAudio.setText(muteado ? "Mute" : "Audio");
+        botonAudio.setTooltip(new Tooltip(muteado ? "Activar audio" : "Mutear audio"));
     }
 
     private HBox crearRaiz(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
@@ -94,6 +105,7 @@ public class BarraJuego {
                 crearBotonTorreta("D", "Torreta distante", TipoTorreta.DISTANTE, alSeleccionarTorreta),
                 mensaje,
                 espacioFlexible,
+                botonAudio,
                 crearBotonAccion("Reiniciar", "Reiniciar nivel", ANCHO_BOTON_REINICIAR, alReiniciarNivel),
                 crearBotonAccion("Menu", "Volver al menu", ANCHO_BOTON_MENU, alVolverAlMenu)
         );
@@ -134,6 +146,12 @@ public class BarraJuego {
             } else {
                 entrada.getValue().setStyle("");
             }
+        }
+
+        if (audioMuteado) {
+            botonAudio.setStyle("-fx-background-color: #6d7380; -fx-text-fill: white;");
+        } else {
+            botonAudio.setStyle("");
         }
     }
 }

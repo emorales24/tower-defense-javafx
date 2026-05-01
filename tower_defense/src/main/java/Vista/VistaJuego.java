@@ -23,6 +23,7 @@ public class VistaJuego {
     private final Canvas canvas;
     private final BarraJuego barra;
     private final RenderizadorJuego renderizador;
+    private final AudioJuego audio;
     private final IntConsumer alGanarNivel;
     private final Runnable alPerder;
     private final Runnable alGanarJuego;
@@ -33,12 +34,13 @@ public class VistaJuego {
     private AnimationTimer loopActualizacion;
     private AnimationTimer loopRender;
 
-    public VistaJuego(Juego juego, IntConsumer alGanarNivel, Runnable alPerder, Runnable alGanarJuego, Runnable alVolverAlMenu) {
-        if (juego == null || alGanarNivel == null || alPerder == null || alGanarJuego == null || alVolverAlMenu == null) {
+    public VistaJuego(Juego juego, AudioJuego audio, IntConsumer alGanarNivel, Runnable alPerder, Runnable alGanarJuego, Runnable alVolverAlMenu) {
+        if (juego == null || audio == null || alGanarNivel == null || alPerder == null || alGanarJuego == null || alVolverAlMenu == null) {
             throw new IllegalArgumentException("La vista de juego requiere juego y acciones de finalizacion");
         }
 
         this.juego = juego;
+        this.audio = audio;
         this.alGanarNivel = alGanarNivel;
         this.alPerder = alPerder;
         this.alGanarJuego = alGanarJuego;
@@ -48,7 +50,7 @@ public class VistaJuego {
         this.tipoSeleccionado = TipoTorreta.SIMPLE;
         this.slotResaltado = null;
         this.ultimoNivelMostrado = juego.obtenerIndiceNivelActual();
-        this.barra = new BarraJuego(this::seleccionarTorreta, this::reiniciarNivelActual, this::volverAlMenu);
+        this.barra = new BarraJuego(this::seleccionarTorreta, this::alternarAudio, this::reiniciarNivelActual, this::volverAlMenu);
         this.renderizador = new RenderizadorJuego(canvas);
         this.raiz = crearRaiz();
         configurarClicks();
@@ -89,6 +91,11 @@ public class VistaJuego {
         slotResaltado = null;
         barra.mostrarMensaje("Nivel reiniciado");
         dibujar();
+    }
+
+    private void alternarAudio() {
+        audio.alternarMute();
+        barra.actualizarAudio(audio.estaMuteado());
     }
 
     private void volverAlMenu() {
@@ -194,6 +201,11 @@ public class VistaJuego {
 
     private boolean actualizarJuego() {
         juego.actualizar(SEGUNDOS_POR_ACTUALIZACION);
+        juego.obtenerNivelActual().consumirEventosEnemigosEliminados().forEach(evento -> {
+            audio.reproducirExplosion(evento.obtenerTipoEnemigo());
+            renderizador.registrarExplosion(evento);
+        });
+        renderizador.actualizar(SEGUNDOS_POR_ACTUALIZACION);
 
         if (juego.obtenerEstado() == EstadoJuego.VICTORIA_NIVEL) {
             detenerLoop();

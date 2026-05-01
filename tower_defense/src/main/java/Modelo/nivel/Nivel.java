@@ -31,6 +31,7 @@ public class Nivel {
     private final List<Proyectil> proyectilesActivos;
     private final Map<Slot, Torreta> torretasInstaladas;
     private final List<SpawnEnemigos> spawnsPendientes;
+    private final List<EventoEnemigoEliminado> eventosEnemigosEliminados;
 
     private double tiempoTranscurrido;
     private EstadoNivel estado;
@@ -61,6 +62,7 @@ public class Nivel {
         this.proyectilesActivos = new ArrayList<>();
         this.torretasInstaladas = new LinkedHashMap<>();
         this.spawnsPendientes = new ArrayList<>();
+        this.eventosEnemigosEliminados = new ArrayList<>();
         this.estado = EstadoNivel.NO_INICIADO;
 
         validarTorretasIniciales();
@@ -69,6 +71,7 @@ public class Nivel {
     public void iniciar() {
         enemigosActivos.clear();
         proyectilesActivos.clear();
+        eventosEnemigosEliminados.clear();
         torretasInstaladas.clear();
         cargarTorretasIniciales();
         spawnsPendientes.clear();
@@ -152,6 +155,12 @@ public class Nivel {
         return estado;
     }
 
+    public List<EventoEnemigoEliminado> consumirEventosEnemigosEliminados() {
+        List<EventoEnemigoEliminado> eventos = List.copyOf(eventosEnemigosEliminados);
+        eventosEnemigosEliminados.clear();
+        return eventos;
+    }
+
     private void aparecerEnemigosPendientes() {
         List<SpawnEnemigos> spawnsAEliminar = new ArrayList<>();
 
@@ -201,6 +210,11 @@ public class Nivel {
                 jugador.sumarPuntaje(enemigo.obtenerRecompensaPuntaje());
             }
 
+            eventosEnemigosEliminados.add(new EventoEnemigoEliminado(
+                    enemigo.obtenerTipo(),
+                    enemigo.obtenerPosicion(),
+                    enemigo.llegoAlFinal()
+            ));
             enemigosAEliminar.add(enemigo);
         }
 

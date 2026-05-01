@@ -139,7 +139,8 @@ public abstract class Torreta implements Actualizable, Posicionable {
                 objetivo.get(),
                 velocidadProyectil,
                 danioPorDisparo,
-                dimensionProyectil
+                dimensionProyectil,
+                tipo
         ));
     }
 }

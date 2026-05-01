@@ -15,12 +15,14 @@ public class App extends Application {
     private static final int CANTIDAD_NIVELES = 3;
 
     private Stage stage;
+    private AudioJuego audio;
     private int nivelMaximoDesbloqueado;
     private int nivelInicialActual;
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        this.audio = new AudioJuego();
         this.nivelMaximoDesbloqueado = 1;
         this.nivelInicialActual = 1;
         stage.setTitle("Tower Defense");
@@ -29,6 +31,7 @@ public class App extends Application {
     }
 
     private void mostrarMenu() {
+        audio.reproducirMusicaMenu();
         VistaMenu menu = new VistaMenu(nivelMaximoDesbloqueado, this::iniciarJuegoDesdeNivel, Platform::exit);
         stage.setScene(new Scene(menu.obtenerRaiz(), ANCHO_MENU, ALTO_MENU));
         stage.show();
@@ -46,8 +49,10 @@ public class App extends Application {
     }
 
     private void mostrarJuego(Juego juego) {
+        audio.reproducirMusicaJuego();
         VistaJuego vistaJuego = new VistaJuego(
                 juego,
+                audio,
                 nivelSiguiente -> {
                     int nivelRealSiguiente = nivelInicialActual + nivelSiguiente - 1;
                     desbloquearHasta(nivelRealSiguiente);
