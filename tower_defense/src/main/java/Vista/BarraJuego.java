@@ -4,7 +4,10 @@ import Modelo.Juego;
 import Modelo.torreta.TipoTorreta;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 import java.util.EnumMap;
@@ -13,6 +16,9 @@ import java.util.function.Consumer;
 
 public class BarraJuego {
     private static final double ALTO = 48;
+    private static final double ANCHO_BOTON_TORRETA = 36;
+    private static final double ANCHO_BOTON_REINICIAR = 82;
+    private static final double ANCHO_BOTON_MENU = 62;
 
     private final HBox raiz;
     private final Label estado;
@@ -52,10 +58,10 @@ public class BarraJuego {
     }
 
     public void actualizar(Juego juego) {
-        estado.setText("Estado: " + juego.obtenerEstado() + " | Nivel " + (juego.obtenerIndiceNivelActual() + 1));
-        dinero.setText("Dinero: " + juego.obtenerJugador().obtenerDineroDisponible());
-        puntaje.setText("Puntaje: " + juego.obtenerJugador().obtenerPuntajeAcumulado());
-        seleccion.setText("Seleccion: " + tipoSeleccionado);
+        estado.setText(juego.obtenerEstado() + " | N" + (juego.obtenerIndiceNivelActual() + 1));
+        dinero.setText("$" + juego.obtenerJugador().obtenerDineroDisponible());
+        puntaje.setText("Pts " + juego.obtenerJugador().obtenerPuntajeAcumulado());
+        seleccion.setText(tipoSeleccionado.name());
     }
 
     public void mostrarMensaje(String texto) {
@@ -63,10 +69,10 @@ public class BarraJuego {
     }
 
     private HBox crearRaiz(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
-        HBox barra = new HBox(16);
+        HBox barra = new HBox(10);
         barra.setMinHeight(ALTO);
         barra.setPrefHeight(ALTO);
-        barra.setStyle("-fx-padding: 12; -fx-background-color: #20242a; -fx-text-fill: white;");
+        barra.setStyle("-fx-padding: 10; -fx-background-color: #20242a; -fx-text-fill: white;");
 
         estado.setTextFill(Color.WHITE);
         dinero.setTextFill(Color.WHITE);
@@ -74,26 +80,33 @@ public class BarraJuego {
         seleccion.setTextFill(Color.WHITE);
         mensaje.setTextFill(Color.WHITE);
 
+        Region espacioFlexible = new Region();
+        HBox.setHgrow(espacioFlexible, Priority.ALWAYS);
+
         barra.getChildren().addAll(
                 estado,
                 dinero,
                 puntaje,
                 seleccion,
-                crearBotonTorreta("Simple", TipoTorreta.SIMPLE, alSeleccionarTorreta),
-                crearBotonTorreta("Rapida", TipoTorreta.RAPIDA, alSeleccionarTorreta),
-                crearBotonTorreta("Potente", TipoTorreta.POTENTE, alSeleccionarTorreta),
-                crearBotonTorreta("Distante", TipoTorreta.DISTANTE, alSeleccionarTorreta),
-                crearBotonAccion("Reiniciar", alReiniciarNivel),
-                crearBotonAccion("Menu", alVolverAlMenu),
-                mensaje
+                crearBotonTorreta("S", "Torreta simple", TipoTorreta.SIMPLE, alSeleccionarTorreta),
+                crearBotonTorreta("R", "Torreta rapida", TipoTorreta.RAPIDA, alSeleccionarTorreta),
+                crearBotonTorreta("P", "Torreta potente", TipoTorreta.POTENTE, alSeleccionarTorreta),
+                crearBotonTorreta("D", "Torreta distante", TipoTorreta.DISTANTE, alSeleccionarTorreta),
+                mensaje,
+                espacioFlexible,
+                crearBotonAccion("Reiniciar", "Reiniciar nivel", ANCHO_BOTON_REINICIAR, alReiniciarNivel),
+                crearBotonAccion("Menu", "Volver al menu", ANCHO_BOTON_MENU, alVolverAlMenu)
         );
 
         return barra;
     }
 
-    private Button crearBotonTorreta(String texto, TipoTorreta tipo, Consumer<TipoTorreta> alSeleccionarTorreta) {
+    private Button crearBotonTorreta(String texto, String descripcion, TipoTorreta tipo, Consumer<TipoTorreta> alSeleccionarTorreta) {
         Button boton = new Button(texto);
         boton.setFocusTraversable(false);
+        boton.setTooltip(new Tooltip(descripcion));
+        boton.setMinWidth(ANCHO_BOTON_TORRETA);
+        boton.setPrefWidth(ANCHO_BOTON_TORRETA);
         boton.setOnAction(evento -> {
             tipoSeleccionado = tipo;
             mensaje.setText("");
@@ -104,9 +117,12 @@ public class BarraJuego {
         return boton;
     }
 
-    private Button crearBotonAccion(String texto, Runnable accion) {
+    private Button crearBotonAccion(String texto, String descripcion, double ancho, Runnable accion) {
         Button boton = new Button(texto);
         boton.setFocusTraversable(false);
+        boton.setTooltip(new Tooltip(descripcion));
+        boton.setMinWidth(ancho);
+        boton.setPrefWidth(ancho);
         boton.setOnAction(evento -> accion.run());
         return boton;
     }
