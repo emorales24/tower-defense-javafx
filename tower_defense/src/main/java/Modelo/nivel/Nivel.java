@@ -22,7 +22,7 @@ public class Nivel {
     private final Escenario escenario;
     private final Jugador jugador;
     private final double dineroInicial;
-    private final List<SpawnEnemigos> spawnsConfigurados;
+    private final List<SpawnEnemigo> spawnsConfigurados;
     private final Map<Slot, TipoTorreta> torretasInicialesConfiguradas;
     private final FabricaEnemigo fabricaEnemigo;
     private final FabricaTorreta fabricaTorreta;
@@ -30,7 +30,8 @@ public class Nivel {
     private final List<Enemigo> enemigosActivos;
     private final List<Proyectil> proyectilesActivos;
     private final Map<Slot, Torreta> torretasInstaladas;
-    private final List<SpawnEnemigos> spawnsPendientes;
+    private final List<SpawnEnemigo> spawnsPendientes;
+    private final List<EventoEnemigoEliminado> eventosEnemigosEliminados;
 
     private double tiempoTranscurrido;
     private EstadoNivel estado;
@@ -39,7 +40,7 @@ public class Nivel {
             Escenario escenario,
             Jugador jugador,
             double dineroInicial,
-            List<SpawnEnemigos> spawnsConfigurados,
+            List<SpawnEnemigo> spawnsConfigurados,
             Map<Slot, TipoTorreta> torretasIniciales
     ) {
         if (escenario == null || jugador == null || spawnsConfigurados == null || torretasIniciales == null) {
@@ -61,6 +62,7 @@ public class Nivel {
         this.proyectilesActivos = new ArrayList<>();
         this.torretasInstaladas = new LinkedHashMap<>();
         this.spawnsPendientes = new ArrayList<>();
+        this.eventosEnemigosEliminados = new ArrayList<>();
         this.estado = EstadoNivel.NO_INICIADO;
 
         validarTorretasIniciales();
@@ -69,6 +71,7 @@ public class Nivel {
     public void iniciar() {
         enemigosActivos.clear();
         proyectilesActivos.clear();
+        eventosEnemigosEliminados.clear();
         torretasInstaladas.clear();
         cargarTorretasIniciales();
         spawnsPendientes.clear();
@@ -140,7 +143,7 @@ public class Nivel {
         return Map.copyOf(torretasInstaladas);
     }
 
-    public List<SpawnEnemigos> obtenerSpawnsPendientes() {
+    public List<SpawnEnemigo> obtenerSpawnsPendientes() {
         return List.copyOf(spawnsPendientes);
     }
 
@@ -152,10 +155,16 @@ public class Nivel {
         return estado;
     }
 
-    private void aparecerEnemigosPendientes() {
-        List<SpawnEnemigos> spawnsAEliminar = new ArrayList<>();
+    public List<EventoEnemigoEliminado> consumirEventosEnemigosEliminados() {
+        List<EventoEnemigoEliminado> eventos = List.copyOf(eventosEnemigosEliminados);
+        eventosEnemigosEliminados.clear();
+        return eventos;
+    }
 
-        for (SpawnEnemigos spawn : spawnsPendientes) {
+    private void aparecerEnemigosPendientes() {
+        List<SpawnEnemigo> spawnsAEliminar = new ArrayList<>();
+
+        for (SpawnEnemigo spawn : spawnsPendientes) {
             if (spawn.debeAparecer(tiempoTranscurrido)) {
                 enemigosActivos.add(fabricaEnemigo.crear(spawn.obtenerTipoEnemigo(), escenario.obtenerRuta()));
                 spawnsAEliminar.add(spawn);
@@ -201,6 +210,11 @@ public class Nivel {
                 jugador.sumarPuntaje(enemigo.obtenerRecompensaPuntaje());
             }
 
+            eventosEnemigosEliminados.add(new EventoEnemigoEliminado(
+                    enemigo.obtenerTipo(),
+                    enemigo.obtenerPosicion(),
+                    enemigo.llegoAlFinal()
+            ));
             enemigosAEliminar.add(enemigo);
         }
 

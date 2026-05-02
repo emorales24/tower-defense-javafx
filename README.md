@@ -24,6 +24,7 @@ Para ejecutar el juego, utilice el siguiente comando:
 ...
 
 ### Licencia
+https://opengameart.org/content/dungeon-crawl-32x32-tiles
 ...
 
 

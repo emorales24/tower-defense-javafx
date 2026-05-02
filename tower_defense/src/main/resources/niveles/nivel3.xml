@@ -30,7 +30,5 @@
         <enemigo tipo="FUERTE" tiempo="9"/>
     </enemigos>
 
-    <torretasIniciales>
-        <torreta slotX="240" slotY="330" tipo="RAPIDA"/>
-    </torretasIniciales>
+    <torretasIniciales/>
 </nivel>

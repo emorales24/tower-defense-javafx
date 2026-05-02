@@ -32,6 +32,14 @@ public class CargadorJuegoXml implements CargadorJuego {
         return cargar(RUTAS_NIVELES_POR_DEFECTO);
     }
 
+    public Juego cargarDesdeNivel(int numeroNivel) {
+        if (numeroNivel < 1 || numeroNivel > RUTAS_NIVELES_POR_DEFECTO.size()) {
+            throw new IllegalArgumentException("El numero de nivel debe estar entre 1 y " + RUTAS_NIVELES_POR_DEFECTO.size());
+        }
+
+        return cargar(RUTAS_NIVELES_POR_DEFECTO.subList(numeroNivel - 1, RUTAS_NIVELES_POR_DEFECTO.size()));
+    }
+
     @Override
     public Juego cargar(List<String> rutasNiveles) {
         if (rutasNiveles == null || rutasNiveles.isEmpty()) {
