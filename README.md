@@ -23,8 +23,13 @@ Este proyecto es un juego de Tower Defense...
 Para ejecutar el juego, utilice el siguiente comando:
 ...
 
-### Licencia
-https://opengameart.org/content/dungeon-crawl-32x32-tiles
-...
+### Licencias
 
+- **Dungeon Crawl Tiles:** [Dungeon Crawl 32x32 Tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) - Licencia: Public Domain / CC0. 
+Autor: Chris Hamons. https://opengameart.org/content/dungeon-crawl-32x32-tiles
 
+- **Canción de Menú:** [Crystal Cave Song](https://opengameart.org/content/crystal-cave-song18) - Licencia: CC0. Atribución: Créditos a [pixelsphere.org](https://pixelsphere.org) / The Cynic Project. 
+
+- **Canción de Juego:** [Space Boss Battle Theme](https://opengameart.org/content/space-boss-battle-theme) - Licencia: CC-BY 3.0. Autor: Matthew Pablo.http://www.matthewpablo.com. Usuario en OpenGameArt: https://opengameart.org/users/matthewpablo
+
+- **Efectos de Sonido:** [8-Bit Platformer SFX](https://opengameart.org/content/8-bit-platformer-sfx) - Licencia: CC-BY 3.0. Autor: bart.
