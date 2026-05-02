@@ -25,11 +25,11 @@ Para ejecutar el juego, utilice el siguiente comando:
 
 ### Licencias
 
-- **Dungeon Crawl Tiles:** [Dungeon Crawl 32x32 Tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) - Licencia: Public Domain / CC0. 
+- **Dungeon Crawl Tiles:** [Dungeon Crawl 32x32 Tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) - Public Domain / CC0. 
 Autor: Chris Hamons. https://opengameart.org/content/dungeon-crawl-32x32-tiles
 
-- **Canción de Menú:** [Crystal Cave Song](https://opengameart.org/content/crystal-cave-song18) - Licencia: CC0. Atribución: Créditos a [pixelsphere.org](https://pixelsphere.org) / The Cynic Project. 
+- **Canción de Menú:** [Crystal Cave Song](https://opengameart.org/content/crystal-cave-song18) - Public Domain / CC0. Atribución: Créditos a [pixelsphere.org](https://pixelsphere.org) / The Cynic Project. 
 
-- **Canción de Juego:** [Space Boss Battle Theme](https://opengameart.org/content/space-boss-battle-theme) - Licencia: CC-BY 3.0. Autor: Matthew Pablo.http://www.matthewpablo.com. Usuario en OpenGameArt: https://opengameart.org/users/matthewpablo
+- **Canción de Juego:** [Space Boss Battle Theme](https://opengameart.org/content/space-boss-battle-theme) - CC-BY 3.0. Autor: Matthew Pablo. http://www.matthewpablo.com. Usuario en OpenGameArt: https://opengameart.org/users/matthewpablo
 
-- **Efectos de Sonido:** [8-Bit Platformer SFX](https://opengameart.org/content/8-bit-platformer-sfx) - Licencia: CC-BY 3.0. Autor: bart.
+- **Efectos de Sonido:** [8-Bit Platformer SFX](https://opengameart.org/content/8-bit-platformer-sfx) - CC-BY 3.0. Autor: bart.
