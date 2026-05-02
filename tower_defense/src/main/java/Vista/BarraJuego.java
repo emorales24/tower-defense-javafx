@@ -1,52 +1,48 @@
 package Vista;
 
 import Modelo.Juego;
-import Modelo.torreta.TipoTorreta;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
 public class BarraJuego {
     private static final double ALTO = 48;
-    private static final double ANCHO_BOTON_TORRETA = 36;
     private static final double ANCHO_BOTON_AUDIO = 58;
     private static final double ANCHO_BOTON_REINICIAR = 82;
     private static final double ANCHO_BOTON_MENU = 62;
+    private static final double TAMANIO_ICONO_ESTADO = 24;
+    private static final String ESTILO_BOTON_MUTED = "-fx-background-color: #6d7380; -fx-text-fill: white;";
+    private static final String ESTILO_TEXTO = "-fx-text-fill: white; -fx-font-weight: bold;";
 
     private final HBox raiz;
+    private final AssetsJuego assets;
     private final Label estado;
     private final Label dinero;
     private final Label puntaje;
-    private final Label seleccion;
     private final Label mensaje;
     private final Button botonAudio;
-    private final Map<TipoTorreta, Button> botones;
-    private TipoTorreta tipoSeleccionado;
     private boolean audioMuteado;
 
-    public BarraJuego(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alAlternarAudio, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
-        if (alSeleccionarTorreta == null || alAlternarAudio == null || alReiniciarNivel == null || alVolverAlMenu == null) {
-            throw new IllegalArgumentException("La accion de seleccion no puede ser null");
+    public BarraJuego(Runnable alAlternarAudio, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+        if (alAlternarAudio == null || alReiniciarNivel == null || alVolverAlMenu == null) {
+            throw new IllegalArgumentException("Las acciones de la barra no pueden ser null");
         }
 
+        this.assets = new AssetsJuego();
         this.estado = new Label();
         this.dinero = new Label();
         this.puntaje = new Label();
-        this.seleccion = new Label();
         this.mensaje = new Label();
         this.botonAudio = crearBotonAccion("Audio", "Mutear audio", ANCHO_BOTON_AUDIO, alAlternarAudio);
-        this.botones = new EnumMap<>(TipoTorreta.class);
-        this.tipoSeleccionado = TipoTorreta.SIMPLE;
         this.audioMuteado = false;
-        this.raiz = crearRaiz(alSeleccionarTorreta, alReiniciarNivel, alVolverAlMenu);
+        this.raiz = crearRaiz(alReiniciarNivel, alVolverAlMenu);
         actualizarBotones();
     }
 
@@ -58,15 +54,10 @@ public class BarraJuego {
         return ALTO;
     }
 
-    public TipoTorreta obtenerTipoSeleccionado() {
-        return tipoSeleccionado;
-    }
-
     public void actualizar(Juego juego) {
-        estado.setText(juego.obtenerEstado() + " | N" + (juego.obtenerIndiceNivelActual() + 1));
+        estado.setText("Nivel " + (juego.obtenerIndiceNivelActual() + 1));
         dinero.setText("$" + juego.obtenerJugador().obtenerDineroDisponible());
         puntaje.setText("Pts " + juego.obtenerJugador().obtenerPuntajeAcumulado());
-        seleccion.setText(tipoSeleccionado.name());
     }
 
     public void mostrarMensaje(String texto) {
@@ -79,7 +70,7 @@ public class BarraJuego {
         botonAudio.setTooltip(new Tooltip(muteado ? "Activar audio" : "Mutear audio"));
     }
 
-    private HBox crearRaiz(Consumer<TipoTorreta> alSeleccionarTorreta, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+    private HBox crearRaiz(Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
         HBox barra = new HBox(10);
         barra.setMinHeight(ALTO);
         barra.setPrefHeight(ALTO);
@@ -88,21 +79,19 @@ public class BarraJuego {
         estado.setTextFill(Color.WHITE);
         dinero.setTextFill(Color.WHITE);
         puntaje.setTextFill(Color.WHITE);
-        seleccion.setTextFill(Color.WHITE);
         mensaje.setTextFill(Color.WHITE);
+        estado.setStyle(ESTILO_TEXTO);
+        dinero.setStyle(ESTILO_TEXTO);
+        puntaje.setStyle(ESTILO_TEXTO);
+        mensaje.setStyle(ESTILO_TEXTO);
 
         Region espacioFlexible = new Region();
         HBox.setHgrow(espacioFlexible, Priority.ALWAYS);
 
         barra.getChildren().addAll(
                 estado,
-                dinero,
-                puntaje,
-                seleccion,
-                crearBotonTorreta("S", "Torreta simple", TipoTorreta.SIMPLE, alSeleccionarTorreta),
-                crearBotonTorreta("R", "Torreta rapida", TipoTorreta.RAPIDA, alSeleccionarTorreta),
-                crearBotonTorreta("P", "Torreta potente", TipoTorreta.POTENTE, alSeleccionarTorreta),
-                crearBotonTorreta("D", "Torreta distante", TipoTorreta.DISTANTE, alSeleccionarTorreta),
+                crearIndicador(assets.obtenerMonedas(), dinero, "Dinero disponible"),
+                crearIndicador(assets.obtenerPuntaje(), puntaje, "Puntaje acumulado"),
                 mensaje,
                 espacioFlexible,
                 botonAudio,
@@ -113,20 +102,16 @@ public class BarraJuego {
         return barra;
     }
 
-    private Button crearBotonTorreta(String texto, String descripcion, TipoTorreta tipo, Consumer<TipoTorreta> alSeleccionarTorreta) {
-        Button boton = new Button(texto);
-        boton.setFocusTraversable(false);
-        boton.setTooltip(new Tooltip(descripcion));
-        boton.setMinWidth(ANCHO_BOTON_TORRETA);
-        boton.setPrefWidth(ANCHO_BOTON_TORRETA);
-        boton.setOnAction(evento -> {
-            tipoSeleccionado = tipo;
-            mensaje.setText("");
-            actualizarBotones();
-            alSeleccionarTorreta.accept(tipo);
-        });
-        botones.put(tipo, boton);
-        return boton;
+    private HBox crearIndicador(Image imagen, Label valor, String descripcion) {
+        ImageView icono = new ImageView(imagen);
+        icono.setFitWidth(TAMANIO_ICONO_ESTADO);
+        icono.setFitHeight(TAMANIO_ICONO_ESTADO);
+        icono.setPreserveRatio(true);
+
+        HBox indicador = new HBox(4, icono, valor);
+        indicador.setAlignment(Pos.CENTER);
+        Tooltip.install(indicador, new Tooltip(descripcion));
+        return indicador;
     }
 
     private Button crearBotonAccion(String texto, String descripcion, double ancho, Runnable accion) {
@@ -140,16 +125,8 @@ public class BarraJuego {
     }
 
     private void actualizarBotones() {
-        for (Map.Entry<TipoTorreta, Button> entrada : botones.entrySet()) {
-            if (entrada.getKey() == tipoSeleccionado) {
-                entrada.getValue().setStyle("-fx-background-color: #f5f0a6; -fx-text-fill: #20242a;");
-            } else {
-                entrada.getValue().setStyle("");
-            }
-        }
-
         if (audioMuteado) {
-            botonAudio.setStyle("-fx-background-color: #6d7380; -fx-text-fill: white;");
+            botonAudio.setStyle(ESTILO_BOTON_MUTED);
         } else {
             botonAudio.setStyle("");
         }

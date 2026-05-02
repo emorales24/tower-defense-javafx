@@ -11,6 +11,8 @@ import java.net.URL;
 public class AudioJuego {
     private MediaPlayer musicaActual;
     private AudioClip musicaActualClip;
+    private String rutaMusicaActualWav;
+    private String rutaMusicaActualMp3;
     private boolean muteado;
     private boolean musicaDisponible;
     private boolean efectosDisponibles;
@@ -49,12 +51,10 @@ public class AudioJuego {
     public void alternarMute() {
         muteado = !muteado;
 
-        if (musicaActual != null) {
-            musicaActual.setMute(muteado);
-        }
-
-        if (musicaActualClip != null) {
-            musicaActualClip.setVolume(muteado ? 0 : 0.35);
+        if (muteado) {
+            detenerReproduccionActual();
+        } else if (rutaMusicaActualWav != null) {
+            reproducirMusica(rutaMusicaActualWav, rutaMusicaActualMp3);
         }
     }
 
@@ -71,9 +71,11 @@ public class AudioJuego {
     }
 
     private void reproducirMusica(String rutaWav, String rutaMp3) {
-        detenerMusica();
+        detenerReproduccionActual();
+        rutaMusicaActualWav = rutaWav;
+        rutaMusicaActualMp3 = rutaMp3;
 
-        if (!musicaDisponible) {
+        if (muteado || !musicaDisponible) {
             return;
         }
 
@@ -100,6 +102,19 @@ public class AudioJuego {
         } catch (IllegalArgumentException | MediaException e) {
             musicaActual = null;
             musicaDisponible = false;
+        }
+    }
+
+    private void detenerReproduccionActual() {
+        if (musicaActualClip != null) {
+            musicaActualClip.stop();
+            musicaActualClip = null;
+        }
+
+        if (musicaActual != null) {
+            musicaActual.stop();
+            musicaActual.dispose();
+            musicaActual = null;
         }
     }
 

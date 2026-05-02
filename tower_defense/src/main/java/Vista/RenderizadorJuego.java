@@ -11,6 +11,7 @@ import Modelo.nivel.EventoEnemigoEliminado;
 import Modelo.nivel.Nivel;
 import Modelo.proyectil.Proyectil;
 import Modelo.torreta.Torreta;
+import Modelo.torreta.TipoTorreta;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -54,7 +55,7 @@ public class RenderizadorJuego {
         explosiones.add(new AnimacionExplosion(evento.obtenerPosicion(), evento.obtenerTipoEnemigo(), assets));
     }
 
-    public void dibujar(Juego juego, Slot slotResaltado) {
+    public void dibujar(Juego juego, Slot slotResaltado, TipoTorreta tipoSeleccionado) {
         GraphicsContext graficos = canvas.getGraphicsContext2D();
         graficos.setImageSmoothing(false);
         Escenario escenario = juego.obtenerNivelActual().obtenerEscenario();
@@ -68,6 +69,7 @@ public class RenderizadorJuego {
         dibujarTorretas(graficos, nivel);
         dibujarEnemigos(graficos, nivel);
         dibujarProyectiles(graficos, nivel);
+        dibujarPrevisualizacionTorreta(graficos, nivel, slotResaltado, tipoSeleccionado);
         dibujarExplosiones(graficos);
     }
 
@@ -169,6 +171,16 @@ public class RenderizadorJuego {
             Image imagen = assets.obtenerProyectil(proyectil.obtenerTipoTorreta(), direccionProyectil(proyectil));
             dibujarCentrado(graficos, imagen, proyectil.obtenerPosicion(), TAMANIO_PROYECTIL, TAMANIO_PROYECTIL);
         }
+    }
+
+    private void dibujarPrevisualizacionTorreta(GraphicsContext graficos, Nivel nivel, Slot slotResaltado, TipoTorreta tipoSeleccionado) {
+        if (slotResaltado == null || tipoSeleccionado == null || nivel.obtenerTorretasInstaladas().containsKey(slotResaltado)) {
+            return;
+        }
+
+        graficos.setGlobalAlpha(0.65);
+        dibujarCentrado(graficos, assets.obtenerTorreta(tipoSeleccionado), slotResaltado.obtenerPosicion(), TAMANIO_TORRETA, TAMANIO_TORRETA);
+        graficos.setGlobalAlpha(1);
     }
 
     private void dibujarExplosiones(GraphicsContext graficos) {

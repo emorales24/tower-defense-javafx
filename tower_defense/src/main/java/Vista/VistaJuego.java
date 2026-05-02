@@ -22,6 +22,7 @@ public class VistaJuego {
     private final BorderPane raiz;
     private final Canvas canvas;
     private final BarraJuego barra;
+    private final SelectorTorretas selectorTorretas;
     private final RenderizadorJuego renderizador;
     private final AudioJuego audio;
     private final IntConsumer alGanarNivel;
@@ -50,7 +51,8 @@ public class VistaJuego {
         this.tipoSeleccionado = TipoTorreta.SIMPLE;
         this.slotResaltado = null;
         this.ultimoNivelMostrado = juego.obtenerIndiceNivelActual();
-        this.barra = new BarraJuego(this::seleccionarTorreta, this::alternarAudio, this::reiniciarNivelActual, this::volverAlMenu);
+        this.barra = new BarraJuego(this::alternarAudio, this::reiniciarNivelActual, this::volverAlMenu);
+        this.selectorTorretas = new SelectorTorretas(this::seleccionarTorreta);
         this.renderizador = new RenderizadorJuego(canvas);
         this.raiz = crearRaiz();
         configurarClicks();
@@ -65,7 +67,7 @@ public class VistaJuego {
     }
 
     public double obtenerAlto() {
-        return canvas.getHeight() + barra.obtenerAlto();
+        return canvas.getHeight() + barra.obtenerAlto() + selectorTorretas.obtenerAlto();
     }
 
     public void iniciar() {
@@ -78,12 +80,15 @@ public class VistaJuego {
         BorderPane contenedor = new BorderPane();
         contenedor.setTop(barra.obtenerRaiz());
         contenedor.setCenter(canvas);
+        contenedor.setBottom(selectorTorretas.obtenerRaiz());
         return contenedor;
     }
 
     private void seleccionarTorreta(TipoTorreta tipo) {
         tipoSeleccionado = tipo;
+        selectorTorretas.seleccionar(tipo);
         barra.actualizar(juego);
+        dibujar();
     }
 
     private void reiniciarNivelActual() {
@@ -249,6 +254,6 @@ public class VistaJuego {
 
     private void dibujar() {
         barra.actualizar(juego);
-        renderizador.dibujar(juego, slotResaltado);
+        renderizador.dibujar(juego, slotResaltado, tipoSeleccionado);
     }
 }

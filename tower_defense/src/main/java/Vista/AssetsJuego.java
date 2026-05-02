@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class AssetsJuego {
     private final Image baseJugador;
+    private final Image monedas;
+    private final Image puntaje;
     private final Image slot;
     private final Image ruta;
     private final Image[] pisos;
@@ -20,6 +22,8 @@ public class AssetsJuego {
 
     public AssetsJuego() {
         this.baseJugador = cargar("/assets/base.png");
+        this.monedas = cargar("/assets/escenario/monedas.png");
+        this.puntaje = cargar("/assets/escenario/puntaje.png");
         this.slot = cargar("/assets/escenario/slots.png");
         this.ruta = cargar("/assets/escenario/ruta/pedestal_full.png");
         this.pisos = cargarPisos();
@@ -31,6 +35,14 @@ public class AssetsJuego {
 
     public Image obtenerBaseJugador() {
         return baseJugador;
+    }
+
+    public Image obtenerMonedas() {
+        return monedas;
+    }
+
+    public Image obtenerPuntaje() {
+        return puntaje;
     }
 
     public Image obtenerSlot() {
