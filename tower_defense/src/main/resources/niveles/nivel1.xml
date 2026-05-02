@@ -23,6 +23,6 @@
         <enemigo tipo="MEDIO" tiempo="3"/>
         <enemigo tipo="FUERTE" tiempo="6"/>
     </enemigos>
-    
+
     <torretasIniciales/>
 </nivel>

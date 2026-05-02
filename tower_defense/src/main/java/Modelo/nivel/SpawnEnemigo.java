@@ -2,11 +2,11 @@ package Modelo.nivel;
 
 import Modelo.enemigo.TipoEnemigo;
 
-public class SpawnEnemigos {
+public class SpawnEnemigo {
     private final TipoEnemigo tipoEnemigo;
     private final double tiempoAparicion;
 
-    public SpawnEnemigos(TipoEnemigo tipoEnemigo, double tiempoAparicion) {
+    public SpawnEnemigo(TipoEnemigo tipoEnemigo, double tiempoAparicion) {
         if (tipoEnemigo == null) {
             throw new IllegalArgumentException("El tipo de enemigo no puede ser null");
         }

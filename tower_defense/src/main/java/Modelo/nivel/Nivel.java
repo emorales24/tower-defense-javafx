@@ -22,7 +22,7 @@ public class Nivel {
     private final Escenario escenario;
     private final Jugador jugador;
     private final double dineroInicial;
-    private final List<SpawnEnemigos> spawnsConfigurados;
+    private final List<SpawnEnemigo> spawnsConfigurados;
     private final Map<Slot, TipoTorreta> torretasInicialesConfiguradas;
     private final FabricaEnemigo fabricaEnemigo;
     private final FabricaTorreta fabricaTorreta;
@@ -30,7 +30,7 @@ public class Nivel {
     private final List<Enemigo> enemigosActivos;
     private final List<Proyectil> proyectilesActivos;
     private final Map<Slot, Torreta> torretasInstaladas;
-    private final List<SpawnEnemigos> spawnsPendientes;
+    private final List<SpawnEnemigo> spawnsPendientes;
     private final List<EventoEnemigoEliminado> eventosEnemigosEliminados;
 
     private double tiempoTranscurrido;
@@ -40,7 +40,7 @@ public class Nivel {
             Escenario escenario,
             Jugador jugador,
             double dineroInicial,
-            List<SpawnEnemigos> spawnsConfigurados,
+            List<SpawnEnemigo> spawnsConfigurados,
             Map<Slot, TipoTorreta> torretasIniciales
     ) {
         if (escenario == null || jugador == null || spawnsConfigurados == null || torretasIniciales == null) {
@@ -143,7 +143,7 @@ public class Nivel {
         return Map.copyOf(torretasInstaladas);
     }
 
-    public List<SpawnEnemigos> obtenerSpawnsPendientes() {
+    public List<SpawnEnemigo> obtenerSpawnsPendientes() {
         return List.copyOf(spawnsPendientes);
     }
 
@@ -162,9 +162,9 @@ public class Nivel {
     }
 
     private void aparecerEnemigosPendientes() {
-        List<SpawnEnemigos> spawnsAEliminar = new ArrayList<>();
+        List<SpawnEnemigo> spawnsAEliminar = new ArrayList<>();
 
-        for (SpawnEnemigos spawn : spawnsPendientes) {
+        for (SpawnEnemigo spawn : spawnsPendientes) {
             if (spawn.debeAparecer(tiempoTranscurrido)) {
                 enemigosActivos.add(fabricaEnemigo.crear(spawn.obtenerTipoEnemigo(), escenario.obtenerRuta()));
                 spawnsAEliminar.add(spawn);

@@ -9,7 +9,7 @@ import Modelo.escena.Slot;
 import Modelo.geometria.Dimension;
 import Modelo.geometria.Posicion;
 import Modelo.nivel.Nivel;
-import Modelo.nivel.SpawnEnemigos;
+import Modelo.nivel.SpawnEnemigo;
 import Modelo.torreta.TipoTorreta;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -99,7 +99,7 @@ public class CargadorNivelXml implements CargadorNivel {
 
         Ruta ruta = leerRuta(rutaArchivo, nivel);
         List<Slot> slots = leerSlots(rutaArchivo, nivel);
-        List<SpawnEnemigos> enemigos = leerEnemigos(rutaArchivo, nivel);
+        List<SpawnEnemigo> enemigos = leerEnemigos(rutaArchivo, nivel);
         Map<Slot, TipoTorreta> torretasIniciales = leerTorretasIniciales(rutaArchivo, nivel, slots);
 
         Escenario escenario = new Escenario(ancho, alto, ruta, spawn, base, slots);
@@ -169,12 +169,12 @@ public class CargadorNivelXml implements CargadorNivel {
         );
     }
 
-    private List<SpawnEnemigos> leerEnemigos(String rutaArchivo, Element nivel) {
+    private List<SpawnEnemigo> leerEnemigos(String rutaArchivo, Element nivel) {
         Element enemigosElemento = unicoHijoObligatorio(rutaArchivo, nivel, "enemigos");
-        List<SpawnEnemigos> enemigos = new ArrayList<>();
+        List<SpawnEnemigo> enemigos = new ArrayList<>();
 
         for (Element enemigo : hijos(enemigosElemento, "enemigo")) {
-            enemigos.add(new SpawnEnemigos(
+            enemigos.add(new SpawnEnemigo(
                     enumObligatorio(TipoEnemigo.class, rutaArchivo, enemigo, "tipo"),
                     numeroObligatorio(rutaArchivo, enemigo, "tiempo")
             ));
