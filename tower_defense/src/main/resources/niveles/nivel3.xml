@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nivel ancho="800" alto="600" dineroInicial="300">
+<nivel ancho="800" alto="600" dineroInicial="280">
     <spawn x="0" y="520"/>
-    <baseJugador x="760" y="80" vida="30"/>
+    <baseJugador x="760" y="80" vida="24"/>
 
     <ruta ancho="32">
         <punto orden="1" x="0" y="520"/>
@@ -14,20 +14,40 @@
 
     <slots>
         <slot x="80" y="450" ancho="32" alto="32"/>
+        <slot x="80" y="560" ancho="32" alto="32"/>
         <slot x="240" y="330" ancho="32" alto="32"/>
         <slot x="340" y="200" ancho="32" alto="32"/>
+        <slot x="300" y="300" ancho="32" alto="32"/>
+        <slot x="420" y="330" ancho="32" alto="32"/>
         <slot x="500" y="150" ancho="32" alto="32"/>
+        <slot x="520" y="40" ancho="32" alto="32"/>
         <slot x="650" y="40" ancho="32" alto="32"/>
         <slot x="650" y="150" ancho="32" alto="32"/>
     </slots>
 
     <enemigos>
         <enemigo tipo="MEDIO" tiempo="0"/>
-        <enemigo tipo="DEBIL" tiempo="0.5"/>
-        <enemigo tipo="MEDIO" tiempo="2"/>
-        <enemigo tipo="FUERTE" tiempo="4"/>
+        <enemigo tipo="DEBIL" tiempo="1"/>
+        <enemigo tipo="MEDIO" tiempo="3"/>
         <enemigo tipo="FUERTE" tiempo="6"/>
-        <enemigo tipo="FUERTE" tiempo="9"/>
+        <enemigo tipo="MEDIO" tiempo="9"/>
+        <enemigo tipo="DEBIL" tiempo="12"/>
+        <enemigo tipo="FUERTE" tiempo="16"/>
+        <enemigo tipo="MEDIO" tiempo="20"/>
+        <enemigo tipo="FUERTE" tiempo="24"/>
+        <enemigo tipo="DEBIL" tiempo="28"/>
+        <enemigo tipo="MEDIO" tiempo="32"/>
+        <enemigo tipo="FUERTE" tiempo="37"/>
+        <enemigo tipo="FUERTE" tiempo="43"/>
+        <enemigo tipo="MEDIO" tiempo="49"/>
+        <enemigo tipo="DEBIL" tiempo="54"/>
+        <enemigo tipo="FUERTE" tiempo="60"/>
+        <enemigo tipo="MEDIO" tiempo="66"/>
+        <enemigo tipo="FUERTE" tiempo="73"/>
+        <enemigo tipo="FUERTE" tiempo="81"/>
+        <enemigo tipo="MEDIO" tiempo="89"/>
+        <enemigo tipo="FUERTE" tiempo="98"/>
+        <enemigo tipo="FUERTE" tiempo="108"/>
     </enemigos>
 
     <torretasIniciales/>
