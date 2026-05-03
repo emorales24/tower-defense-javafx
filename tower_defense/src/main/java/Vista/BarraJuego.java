@@ -7,20 +7,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 
 public class BarraJuego {
     private static final double ALTO = 48;
-    private static final double ANCHO_BOTON_AUDIO = 58;
-    private static final double ANCHO_BOTON_PAUSA = 78;
-    private static final double ANCHO_BOTON_REINICIAR = 82;
-    private static final double ANCHO_BOTON_MENU = 62;
+    private static final double TAMANIO_BOTON_ICONO = 34;
     private static final double TAMANIO_ICONO_ESTADO = 24;
-    private static final String ESTILO_BOTON_MUTED = "-fx-background-color: #6d7380; -fx-text-fill: white;";
     private static final String ESTILO_TEXTO = "-fx-text-fill: white; -fx-font-weight: bold;";
+    private static final String ESTILO_BOTON_ICONO = "-fx-background-color: #111a22; -fx-background-radius: 18; -fx-border-color: #314455; -fx-border-radius: 18;";
+    private static final String ESTILO_BOTON_ICONO_HOVER = "-fx-background-color: #1b2a36; -fx-background-radius: 18; -fx-border-color: #557087; -fx-border-radius: 18;";
+    private static final Color COLOR_ICONO = Color.web("#e8edf0");
+    private static final Color COLOR_ICONO_MUTEADO = Color.web("#8f9aa3");
 
     private final HBox raiz;
     private final AssetsJuego assets;
@@ -30,10 +34,9 @@ public class BarraJuego {
     private final Label mensaje;
     private final Button botonAudio;
     private final Button botonPausa;
-    private boolean audioMuteado;
 
-    public BarraJuego(Runnable alAlternarAudio, Runnable alAlternarPausa, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
-        if (alAlternarAudio == null || alAlternarPausa == null || alReiniciarNivel == null || alVolverAlMenu == null) {
+    public BarraJuego(Runnable alAlternarAudio, Runnable alAlternarPausa) {
+        if (alAlternarAudio == null || alAlternarPausa == null) {
             throw new IllegalArgumentException("Las acciones de la barra no pueden ser null");
         }
 
@@ -42,11 +45,9 @@ public class BarraJuego {
         this.dinero = new Label();
         this.puntaje = new Label();
         this.mensaje = new Label();
-        this.botonAudio = crearBotonAccion("Audio", "Mutear audio", ANCHO_BOTON_AUDIO, alAlternarAudio);
-        this.botonPausa = crearBotonAccion("Pausa", "Pausar juego", ANCHO_BOTON_PAUSA, alAlternarPausa);
-        this.audioMuteado = false;
-        this.raiz = crearRaiz(alReiniciarNivel, alVolverAlMenu);
-        actualizarBotones();
+        this.botonAudio = crearBotonIcono("Mutear audio", crearIconoAudio(false), alAlternarAudio);
+        this.botonPausa = crearBotonIcono("Pausar juego", crearIconoPausa(), alAlternarPausa);
+        this.raiz = crearRaiz();
     }
 
     public HBox obtenerRaiz() {
@@ -68,17 +69,15 @@ public class BarraJuego {
     }
 
     public void actualizarAudio(boolean muteado) {
-        audioMuteado = muteado;
-        botonAudio.setText(muteado ? "Mute" : "Audio");
         botonAudio.setTooltip(new Tooltip(muteado ? "Activar audio" : "Mutear audio"));
+        botonAudio.setGraphic(crearIconoAudio(muteado));
     }
 
     public void actualizarPausa(boolean pausado) {
-        botonPausa.setText(pausado ? "Reanudar" : "Pausa");
-        botonPausa.setTooltip(new Tooltip(pausado ? "Reanudar juego" : "Pausar juego"));
+        botonPausa.setTooltip(new Tooltip(pausado ? "Menu de pausa" : "Pausar juego"));
     }
 
-    private HBox crearRaiz(Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+    private HBox crearRaiz() {
         HBox barra = new HBox(10);
         barra.setMinHeight(ALTO);
         barra.setPrefHeight(ALTO);
@@ -103,9 +102,7 @@ public class BarraJuego {
                 mensaje,
                 espacioFlexible,
                 botonPausa,
-                botonAudio,
-                crearBotonAccion("Reiniciar", "Reiniciar nivel", ANCHO_BOTON_REINICIAR, alReiniciarNivel),
-                crearBotonAccion("Menu", "Volver al menu", ANCHO_BOTON_MENU, alVolverAlMenu)
+                botonAudio
         );
 
         return barra;
@@ -123,21 +120,59 @@ public class BarraJuego {
         return indicador;
     }
 
-    private Button crearBotonAccion(String texto, String descripcion, double ancho, Runnable accion) {
-        Button boton = new Button(texto);
+    private Button crearBotonIcono(String descripcion, StackPane icono, Runnable accion) {
+        Button boton = new Button();
         boton.setFocusTraversable(false);
         boton.setTooltip(new Tooltip(descripcion));
-        boton.setMinWidth(ancho);
-        boton.setPrefWidth(ancho);
+        boton.setMinSize(TAMANIO_BOTON_ICONO, TAMANIO_BOTON_ICONO);
+        boton.setPrefSize(TAMANIO_BOTON_ICONO, TAMANIO_BOTON_ICONO);
+        boton.setMaxSize(TAMANIO_BOTON_ICONO, TAMANIO_BOTON_ICONO);
+        boton.setGraphic(icono);
+        boton.setStyle(ESTILO_BOTON_ICONO);
+        boton.setOnMouseEntered(evento -> boton.setStyle(ESTILO_BOTON_ICONO_HOVER));
+        boton.setOnMouseExited(evento -> boton.setStyle(ESTILO_BOTON_ICONO));
         boton.setOnAction(evento -> accion.run());
         return boton;
     }
 
-    private void actualizarBotones() {
-        if (audioMuteado) {
-            botonAudio.setStyle(ESTILO_BOTON_MUTED);
-        } else {
-            botonAudio.setStyle("");
+    private StackPane crearIconoPausa() {
+        Rectangle barraIzquierda = new Rectangle(4, 14, COLOR_ICONO);
+        Rectangle barraDerecha = new Rectangle(4, 14, COLOR_ICONO);
+        barraIzquierda.setTranslateX(-4);
+        barraDerecha.setTranslateX(4);
+        return new StackPane(barraIzquierda, barraDerecha);
+    }
+
+    private StackPane crearIconoAudio(boolean muteado) {
+        Color color = muteado ? COLOR_ICONO_MUTEADO : COLOR_ICONO;
+        Rectangle caja = new Rectangle(5, 8, color);
+        caja.setTranslateX(-6);
+
+        Polygon cono = new Polygon(
+                -4.0, -5.0,
+                3.0, -10.0,
+                3.0, 10.0,
+                -4.0, 5.0
+        );
+        cono.setFill(color);
+
+        Line ondaUno = crearLineaIcono(7, -6, 10, 0, color);
+        Line ondaDos = crearLineaIcono(10, 0, 7, 6, color);
+        StackPane icono = new StackPane(caja, cono, ondaUno, ondaDos);
+
+        if (muteado) {
+            Line mute = crearLineaIcono(10, -9, -10, 9, COLOR_ICONO);
+            mute.setStrokeWidth(2.5);
+            icono.getChildren().add(mute);
         }
+
+        return icono;
+    }
+
+    private Line crearLineaIcono(double inicioX, double inicioY, double finX, double finY, Color color) {
+        Line linea = new Line(inicioX, inicioY, finX, finY);
+        linea.setStroke(color);
+        linea.setStrokeWidth(2);
+        return linea;
     }
 }
