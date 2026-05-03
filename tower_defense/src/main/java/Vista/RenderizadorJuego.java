@@ -130,11 +130,7 @@ public class RenderizadorJuego {
 
     private void dibujarBase(GraphicsContext graficos, Escenario escenario) {
         Posicion posicion = escenario.obtenerBaseJugador().obtenerPosicion();
-        double x = posicion.obtenerX() - TAMANIO_BASE / 2;
-        double y = posicion.obtenerY() - TAMANIO_BASE / 2;
-
         dibujarCentrado(graficos, assets.obtenerBaseJugador(), posicion, TAMANIO_BASE, TAMANIO_BASE);
-        dibujarBarraVida(graficos, escenario.obtenerBaseJugador(), posicion.obtenerX() - ANCHO_BARRA_VIDA / 2, y - 10);
     }
 
     private void dibujarTorretas(GraphicsContext graficos, Nivel nivel) {

@@ -352,6 +352,7 @@ public class VistaJuego {
 
     private void dibujar() {
         barra.actualizar(juego);
+        selectorTorretas.actualizarDisponibilidad(juego.obtenerJugador().obtenerDineroDisponible());
         renderizador.dibujar(juego, slotResaltado, tipoSeleccionado);
     }
 }

@@ -4,13 +4,14 @@ import Modelo.Juego;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -20,7 +21,12 @@ public class BarraJuego {
     private static final double ALTO = 48;
     private static final double TAMANIO_BOTON_ICONO = 34;
     private static final double TAMANIO_ICONO_ESTADO = 24;
+    private static final double TAMANIO_ICONO_BASE = 28;
+    private static final double ANCHO_BARRA_BASE = 130;
+    private static final double ALTO_BARRA_BASE = 16;
     private static final String ESTILO_TEXTO = "-fx-text-fill: white; -fx-font-weight: bold;";
+    private static final String ESTILO_VIDA_BASE = "-fx-accent: #d63b32; -fx-control-inner-background: #3a1717; -fx-background-radius: 8;";
+    private static final String ESTILO_TEXTO_VIDA_BASE = "-fx-font-size: 10; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, #101010, 2, 1, 0, 1);";
     private static final String ESTILO_BOTON_ICONO = "-fx-background-color: #111a22; -fx-background-radius: 18; -fx-border-color: #314455; -fx-border-radius: 18;";
     private static final String ESTILO_BOTON_ICONO_HOVER = "-fx-background-color: #1b2a36; -fx-background-radius: 18; -fx-border-color: #557087; -fx-border-radius: 18;";
     private static final Color COLOR_ICONO = Color.web("#e8edf0");
@@ -32,6 +38,8 @@ public class BarraJuego {
     private final Label dinero;
     private final Label puntaje;
     private final Label mensaje;
+    private final ProgressBar vidaBase;
+    private final Label porcentajeVidaBase;
     private final Button botonAudio;
     private final Button botonPausa;
 
@@ -45,6 +53,8 @@ public class BarraJuego {
         this.dinero = new Label();
         this.puntaje = new Label();
         this.mensaje = new Label();
+        this.vidaBase = new ProgressBar(1);
+        this.porcentajeVidaBase = new Label("100%");
         this.botonAudio = crearBotonIcono("Mutear audio", crearIconoAudio(false), alAlternarAudio);
         this.botonPausa = crearBotonIcono("Pausar juego", crearIconoPausa(), alAlternarPausa);
         this.raiz = crearRaiz();
@@ -62,6 +72,7 @@ public class BarraJuego {
         estado.setText("Nivel " + (juego.obtenerIndiceNivelActual() + 1));
         dinero.setText("$" + juego.obtenerJugador().obtenerDineroDisponible());
         puntaje.setText("Pts " + juego.obtenerJugador().obtenerPuntajeAcumulado());
+        actualizarVidaBase(juego);
     }
 
     public void mostrarMensaje(String texto) {
@@ -91,6 +102,11 @@ public class BarraJuego {
         dinero.setStyle(ESTILO_TEXTO);
         puntaje.setStyle(ESTILO_TEXTO);
         mensaje.setStyle(ESTILO_TEXTO);
+        porcentajeVidaBase.setStyle(ESTILO_TEXTO_VIDA_BASE);
+        vidaBase.setMinSize(ANCHO_BARRA_BASE, ALTO_BARRA_BASE);
+        vidaBase.setPrefSize(ANCHO_BARRA_BASE, ALTO_BARRA_BASE);
+        vidaBase.setMaxSize(ANCHO_BARRA_BASE, ALTO_BARRA_BASE);
+        vidaBase.setStyle(ESTILO_VIDA_BASE);
 
         Region espacioFlexible = new Region();
         HBox.setHgrow(espacioFlexible, Priority.ALWAYS);
@@ -99,6 +115,7 @@ public class BarraJuego {
                 estado,
                 crearIndicador(assets.obtenerMonedas(), dinero, "Dinero disponible"),
                 crearIndicador(assets.obtenerPuntaje(), puntaje, "Puntaje acumulado"),
+                crearIndicadorVidaBase(),
                 mensaje,
                 espacioFlexible,
                 botonPausa,
@@ -118,6 +135,25 @@ public class BarraJuego {
         indicador.setAlignment(Pos.CENTER);
         Tooltip.install(indicador, new Tooltip(descripcion));
         return indicador;
+    }
+
+    private HBox crearIndicadorVidaBase() {
+        ImageView icono = new ImageView(assets.obtenerBaseJugador());
+        icono.setFitWidth(TAMANIO_ICONO_BASE);
+        icono.setFitHeight(TAMANIO_ICONO_BASE);
+        icono.setPreserveRatio(true);
+
+        StackPane barraConTexto = new StackPane(vidaBase, porcentajeVidaBase);
+        HBox indicador = new HBox(6, icono, barraConTexto);
+        indicador.setAlignment(Pos.CENTER);
+        Tooltip.install(indicador, new Tooltip("Vida de la base"));
+        return indicador;
+    }
+
+    private void actualizarVidaBase(Juego juego) {
+        double porcentaje = juego.obtenerNivelActual().obtenerEscenario().obtenerBaseJugador().obtenerPorcentajeVida();
+        vidaBase.setProgress(porcentaje);
+        porcentajeVidaBase.setText(Math.round(porcentaje * 100) + "%");
     }
 
     private Button crearBotonIcono(String descripcion, StackPane icono, Runnable accion) {
