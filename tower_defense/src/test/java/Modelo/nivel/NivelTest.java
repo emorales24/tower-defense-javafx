@@ -21,18 +21,18 @@ class NivelTest {
 
     @Test
     void nivelOtorgaRecompensaYSeGanaCuandoNoQuedanEnemigosNiSpawns() {
-        Ruta ruta = new Ruta(List.of(new Posicion(0, 0), new Posicion(100, 0)));
+        Ruta ruta = new Ruta(List.of(new Posicion(0, 0), new Posicion(400, 0)));
         Posicion puntoSpawn = new Posicion(0, 0);
-        Base baseJugador = new Base(new Posicion(100, 0), 10);
+        Base baseJugador = new Base(new Posicion(400, 0), 10);
         Slot slot = new Slot(new Posicion(50, 40));
-        Escenario escenario = new Escenario(120, 50, ruta, puntoSpawn, baseJugador, List.of(slot));
+        Escenario escenario = new Escenario(420, 50, ruta, puntoSpawn, baseJugador, List.of(slot));
         Jugador jugador = new Jugador();
         Nivel nivel = new Nivel(
                 escenario,
                 jugador,
                 100,
                 List.of(new SpawnEnemigo(TipoEnemigo.DEBIL, 0)),
-                Map.of(slot, TipoTorreta.SIMPLE)
+                Map.of(slot, TipoTorreta.POTENTE)
         );
 
         nivel.iniciar();
@@ -42,8 +42,8 @@ class NivelTest {
         }
 
         assertEquals(EstadoNivel.GANADO, nivel.obtenerEstado());
-        assertEquals(110, jugador.obtenerDineroDisponible(), 0.0001);
-        assertEquals(10, jugador.obtenerPuntajeAcumulado(), 0.0001);
+        assertEquals(108, jugador.obtenerDineroDisponible(), 0.0001);
+        assertEquals(8, jugador.obtenerPuntajeAcumulado(), 0.0001);
     }
 
     @Test

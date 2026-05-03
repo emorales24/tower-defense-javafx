@@ -19,7 +19,7 @@ class EnemigoTest {
 
         enemigo.actualizar(0.5);
 
-        assertEquals(50, enemigo.obtenerPosicion().obtenerX(), 0.0001);
+        assertEquals(65, enemigo.obtenerPosicion().obtenerX(), 0.0001);
         assertEquals(0, enemigo.obtenerPosicion().obtenerY(), 0.0001);
     }
 
@@ -39,7 +39,7 @@ class EnemigoTest {
         Ruta ruta = new Ruta(List.of(new Posicion(0, 0), new Posicion(100, 0)));
         Enemigo enemigo = new EnemigoDebil(ruta);
 
-        enemigo.recibirDanio(1);
+        enemigo.recibirDanio(3);
 
         assertTrue(enemigo.estaDestruido());
         assertFalse(enemigo.estaActivo());

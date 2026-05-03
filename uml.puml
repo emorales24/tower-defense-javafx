@@ -1,0 +1,394 @@
+@startuml modelo_tp1_paradigmas
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package Modelo {
+  interface Actualizable {
+    +actualizar(deltaTiempo: double)
+  }
+
+  interface Daniable {
+    +recibirDanio(cantidadDanio: double)
+    +obtenerVidaActual(): double
+    +obtenerVidaMaxima(): double
+    +estaDestruido(): boolean
+    +estaVivo(): boolean
+    +obtenerPorcentajeVida(): double
+  }
+
+  interface Posicionable {
+    +obtenerPosicion(): Posicion
+    +obtenerCajaDeColision(): Caja
+    +distanciaA(otro: Posicionable): double
+    +colisionaCon(otro: Posicionable): boolean
+    +contiene(posicion: Posicion): boolean
+  }
+
+  enum EstadoJuego {
+    MENU_PRINCIPAL
+    EN_CURSO
+    VICTORIA_NIVEL
+    DERROTA
+    VICTORIA_FINAL
+  }
+
+  class Juego {
+    -jugador: Jugador
+    -niveles: List<Nivel>
+    -indiceNivelActual: int
+    -estado: EstadoJuego
+    +iniciar()
+    +actualizar(deltaTiempo: double)
+    +avanzarAlSiguienteNivel()
+    +obtenerJugador(): Jugador
+    +obtenerNivelActual(): Nivel
+    +obtenerEstado(): EstadoJuego
+    +obtenerIndiceNivelActual(): int
+    +obtenerNiveles(): List<Nivel>
+  }
+
+  class Jugador {
+    -dineroDisponible: double
+    -puntajeAcumulado: double
+    +obtenerDineroDisponible(): double
+    +obtenerPuntajeAcumulado(): double
+    +puedeComprar(costo: double): boolean
+    +descontarDinero(costo: double)
+    +sumarDinero(cantidad: double)
+    +sumarPuntaje(cantidad: double)
+    +establecerDineroDisponible(dineroDisponible: double)
+  }
+}
+
+package Modelo.geometria {
+  class Posicion {
+    -x: double
+    -y: double
+    +obtenerX(): double
+    +obtenerY(): double
+    +distanciaA(otra: Posicion): double
+    +moverHacia(destino: Posicion, distancia: double): Posicion
+    +estaCercaDe(otra: Posicion, tolerancia: double): boolean
+  }
+
+  class Dimension {
+    -ancho: double
+    -alto: double
+    +obtenerAncho(): double
+    +obtenerAlto(): double
+  }
+
+  class Caja {
+    -centro: Posicion
+    -dimension: Dimension
+    +intersecta(otra: Caja): boolean
+    +contiene(posicion: Posicion): boolean
+    +izquierda(): double
+    +derecha(): double
+    +arriba(): double
+    +abajo(): double
+  }
+}
+
+package Modelo.escena {
+  class Base {
+    -posicion: Posicion
+    -vidaMaxima: double
+    -vidaActual: double
+    +obtenerPosicion(): Posicion
+    +recibirDanio(cantidadDanio: double)
+    +obtenerVidaActual(): double
+    +obtenerVidaMaxima(): double
+    +reiniciarVida()
+  }
+
+  class Ruta {
+    -puntos: List<Posicion>
+    -ancho: double
+    +obtenerInicio(): Posicion
+    +obtenerFin(): Posicion
+    +obtenerPunto(indice: int): Posicion
+    +cantidadPuntos(): int
+    +obtenerPuntos(): List<Posicion>
+    +obtenerAncho(): double
+  }
+
+  class Slot {
+    -posicion: Posicion
+    -dimension: Dimension
+    +obtenerPosicion(): Posicion
+    +obtenerDimension(): Dimension
+    +obtenerCajaDeColision(): Caja
+  }
+
+  class Escenario {
+    -ancho: double
+    -alto: double
+    -ruta: Ruta
+    -puntoSpawn: Posicion
+    -baseJugador: Base
+    -slots: List<Slot>
+    +obtenerAncho(): double
+    +obtenerAlto(): double
+    +obtenerRuta(): Ruta
+    +obtenerPuntoSpawn(): Posicion
+    +obtenerBaseJugador(): Base
+    +obtenerSlots(): List<Slot>
+    +contiene(slot: Slot): boolean
+    +contiene(posicion: Posicion): boolean
+  }
+}
+
+package Modelo.enemigo {
+  enum TipoEnemigo {
+    DEBIL
+    MEDIO
+    FUERTE
+  }
+
+  abstract class Enemigo {
+    -tipo: TipoEnemigo
+    -ruta: Ruta
+    -vidaMaxima: double
+    -velocidad: double
+    -recompensaDinero: double
+    -recompensaPuntaje: double
+    -danioABase: double
+    -dimension: Dimension
+    -posicion: Posicion
+    -vidaActual: double
+    -indiceProximoPunto: int
+    -activo: boolean
+    -llegoAlFinal: boolean
+    +obtenerTipo(): TipoEnemigo
+    +obtenerPosicion(): Posicion
+    +obtenerCajaDeColision(): Caja
+    +actualizar(deltaTiempo: double)
+    +recibirDanio(cantidadDanio: double)
+    +obtenerVidaActual(): double
+    +obtenerVidaMaxima(): double
+    +obtenerVelocidad(): double
+    +obtenerRecompensaDinero(): double
+    +obtenerRecompensaPuntaje(): double
+    +obtenerDanioABase(): double
+    +estaActivo(): boolean
+    +llegoAlFinal(): boolean
+  }
+
+  class EnemigoDebil
+  class EnemigoMedio
+  class EnemigoFuerte
+
+  class FabricaEnemigo {
+    +crear(tipoEnemigo: TipoEnemigo, ruta: Ruta): Enemigo
+  }
+}
+
+package Modelo.torreta {
+  enum TipoTorreta {
+    SIMPLE
+    RAPIDA
+    POTENTE
+    DISTANTE
+  }
+
+  abstract class Torreta {
+    -tipo: TipoTorreta
+    -posicion: Posicion
+    -costo: double
+    -danioPorDisparo: double
+    -alcance: double
+    -intervaloEntreDisparos: double
+    -velocidadProyectil: double
+    -dimension: Dimension
+    -dimensionProyectil: Dimension
+    -tiempoDesdeUltimoDisparo: double
+    +obtenerTipo(): TipoTorreta
+    +obtenerPosicion(): Posicion
+    +obtenerCajaDeColision(): Caja
+    +actualizar(deltaTiempo: double)
+    +obtenerCosto(): double
+    +obtenerDanioPorDisparo(): double
+    +obtenerAlcance(): double
+    +obtenerIntervaloEntreDisparos(): double
+    +puedeDisparar(): boolean
+    +elegirObjetivo(enemigos: List<Enemigo>): Optional<Enemigo>
+    +dispararSiPuede(enemigos: List<Enemigo>): Optional<Proyectil>
+  }
+
+  class TorretaSimple
+  class TorretaRapida
+  class TorretaPotente
+  class TorretaDistante
+
+  class FabricaTorreta {
+    +crear(tipoTorreta: TipoTorreta, posicion: Posicion): Torreta
+  }
+}
+
+package Modelo.proyectil {
+  class Proyectil {
+    -tipoTorreta: TipoTorreta
+    -velocidad: double
+    -danio: double
+    -dimension: Dimension
+    -posicion: Posicion
+    -objetivo: Enemigo
+    -activo: boolean
+    +obtenerPosicion(): Posicion
+    +obtenerCajaDeColision(): Caja
+    +actualizar(deltaTiempo: double)
+    +obtenerVelocidad(): double
+    +obtenerDanio(): double
+    +obtenerTipoTorreta(): TipoTorreta
+    +obtenerObjetivo(): Enemigo
+    +estaActivo(): boolean
+  }
+}
+
+package Modelo.nivel {
+  enum EstadoNivel {
+    NO_INICIADO
+    EN_CURSO
+    GANADO
+    PERDIDO
+  }
+
+  class SpawnEnemigo {
+    -tipoEnemigo: TipoEnemigo
+    -tiempoAparicion: double
+    +obtenerTipoEnemigo(): TipoEnemigo
+    +obtenerTiempoAparicion(): double
+    +debeAparecer(tiempoTranscurrido: double): boolean
+  }
+
+  class EventoEnemigoEliminado {
+    -tipoEnemigo: TipoEnemigo
+    -posicion: Posicion
+    -llegoALaBase: boolean
+    +obtenerTipoEnemigo(): TipoEnemigo
+    +obtenerPosicion(): Posicion
+    +llegoALaBase(): boolean
+  }
+
+  class Nivel {
+    -escenario: Escenario
+    -jugador: Jugador
+    -dineroInicial: double
+    -spawnsConfigurados: List<SpawnEnemigo>
+    -torretasInicialesConfiguradas: Map<Slot, TipoTorreta>
+    -fabricaEnemigo: FabricaEnemigo
+    -fabricaTorreta: FabricaTorreta
+    -enemigosActivos: List<Enemigo>
+    -proyectilesActivos: List<Proyectil>
+    -torretasInstaladas: Map<Slot, Torreta>
+    -spawnsPendientes: List<SpawnEnemigo>
+    -eventosEnemigosEliminados: List<EventoEnemigoEliminado>
+    -tiempoTranscurrido: double
+    -estado: EstadoNivel
+    +iniciar()
+    +actualizar(deltaTiempo: double)
+    +instalarTorreta(slot: Slot, tipoTorreta: TipoTorreta): boolean
+    +obtenerEscenario(): Escenario
+    +obtenerJugador(): Jugador
+    +obtenerEnemigosActivos(): List<Enemigo>
+    +obtenerProyectilesActivos(): List<Proyectil>
+    +obtenerTorretasInstaladas(): Map<Slot, Torreta>
+    +obtenerSpawnsPendientes(): List<SpawnEnemigo>
+    +obtenerTiempoTranscurrido(): double
+    +obtenerEstado(): EstadoNivel
+    +consumirEventosEnemigosEliminados(): List<EventoEnemigoEliminado>
+  }
+}
+
+' --- IMPLEMENTACIONES ---
+
+Daniable <|.. Modelo.escena.Base
+Daniable <|.. Modelo.enemigo.Enemigo
+
+Posicionable <|.. Modelo.escena.Slot
+Posicionable <|.. Modelo.enemigo.Enemigo
+Posicionable <|.. Modelo.torreta.Torreta
+Posicionable <|.. Modelo.proyectil.Proyectil
+
+Actualizable <|.. Modelo.enemigo.Enemigo
+Actualizable <|.. Modelo.torreta.Torreta
+Actualizable <|.. Modelo.proyectil.Proyectil
+
+Modelo.enemigo.Enemigo <|-- Modelo.enemigo.EnemigoDebil
+Modelo.enemigo.Enemigo <|-- Modelo.enemigo.EnemigoMedio
+Modelo.enemigo.Enemigo <|-- Modelo.enemigo.EnemigoFuerte
+
+Modelo.torreta.Torreta <|-- Modelo.torreta.TorretaSimple
+Modelo.torreta.Torreta <|-- Modelo.torreta.TorretaRapida
+Modelo.torreta.Torreta <|-- Modelo.torreta.TorretaPotente
+Modelo.torreta.Torreta <|-- Modelo.torreta.TorretaDistante
+
+' --- RELACIONES PRINCIPALES ---
+
+Modelo.Juego o-- Modelo.Jugador
+Modelo.Juego o-- "1..*" Modelo.nivel.Nivel
+Modelo.Juego --> Modelo.EstadoJuego
+
+Modelo.nivel.Nivel o-- Modelo.escena.Escenario
+Modelo.nivel.Nivel o-- Modelo.Jugador
+Modelo.nivel.Nivel o-- "0..*" Modelo.nivel.SpawnEnemigo : configurados
+Modelo.nivel.Nivel o-- "0..*" Modelo.nivel.SpawnEnemigo : pendientes
+Modelo.nivel.Nivel o-- "0..*" Modelo.escena.Slot
+Modelo.nivel.Nivel ..> Modelo.torreta.TipoTorreta
+Modelo.nivel.Nivel *-- "0..*" Modelo.enemigo.Enemigo
+Modelo.nivel.Nivel *-- "0..*" Modelo.proyectil.Proyectil
+Modelo.nivel.Nivel *-- "0..*" Modelo.torreta.Torreta
+Modelo.nivel.Nivel *-- "0..*" Modelo.nivel.EventoEnemigoEliminado
+Modelo.nivel.Nivel *-- Modelo.enemigo.FabricaEnemigo
+Modelo.nivel.Nivel *-- Modelo.torreta.FabricaTorreta
+Modelo.nivel.Nivel --> Modelo.nivel.EstadoNivel
+
+Modelo.escena.Escenario o-- Modelo.escena.Ruta
+Modelo.escena.Escenario o-- Modelo.escena.Base
+Modelo.escena.Escenario o-- "0..*" Modelo.escena.Slot
+Modelo.escena.Escenario o-- Modelo.geometria.Posicion : puntoSpawn
+
+Modelo.escena.Base o-- Modelo.geometria.Posicion
+Modelo.escena.Ruta o-- "2..*" Modelo.geometria.Posicion
+Modelo.escena.Slot o-- Modelo.geometria.Posicion
+Modelo.escena.Slot o-- Modelo.geometria.Dimension
+
+Modelo.geometria.Caja o-- Modelo.geometria.Posicion
+Modelo.geometria.Caja o-- Modelo.geometria.Dimension
+
+Modelo.enemigo.Enemigo o-- Modelo.escena.Ruta
+Modelo.enemigo.Enemigo o-- Modelo.geometria.Posicion
+Modelo.enemigo.Enemigo o-- Modelo.geometria.Dimension
+Modelo.enemigo.Enemigo --> Modelo.enemigo.TipoEnemigo
+
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.TipoEnemigo
+Modelo.enemigo.FabricaEnemigo ..> Modelo.escena.Ruta
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.EnemigoDebil
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.EnemigoMedio
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.EnemigoFuerte
+
+Modelo.torreta.Torreta o-- Modelo.geometria.Posicion
+Modelo.torreta.Torreta o-- Modelo.geometria.Dimension
+Modelo.torreta.Torreta --> Modelo.torreta.TipoTorreta
+Modelo.torreta.Torreta ..> Modelo.enemigo.Enemigo
+Modelo.torreta.Torreta ..> Modelo.proyectil.Proyectil
+
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TipoTorreta
+Modelo.torreta.FabricaTorreta ..> Modelo.geometria.Posicion
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaSimple
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaRapida
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaPotente
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaDistante
+
+Modelo.proyectil.Proyectil o-- Modelo.geometria.Posicion
+Modelo.proyectil.Proyectil o-- Modelo.geometria.Dimension
+Modelo.proyectil.Proyectil --> Modelo.enemigo.Enemigo
+Modelo.proyectil.Proyectil --> Modelo.torreta.TipoTorreta
+
+Modelo.nivel.SpawnEnemigo --> Modelo.enemigo.TipoEnemigo
+Modelo.nivel.EventoEnemigoEliminado o-- Modelo.geometria.Posicion
+Modelo.nivel.EventoEnemigoEliminado --> Modelo.enemigo.TipoEnemigo
+
+@enduml
