@@ -31,13 +31,13 @@ class CargadorNivelXmlTest {
         assertPosicion(0, 300, nivel.obtenerEscenario().obtenerPuntoSpawn());
         assertPosicion(760, 120, nivel.obtenerEscenario().obtenerBaseJugador().obtenerPosicion());
         assertEquals(4, nivel.obtenerEscenario().obtenerRuta().cantidadPuntos());
-        assertEquals(4, nivel.obtenerEscenario().obtenerSlots().size());
+        assertEquals(7, nivel.obtenerEscenario().obtenerSlots().size());
 
         nivel.iniciar();
 
         assertEquals(EstadoNivel.EN_CURSO, nivel.obtenerEstado());
-        assertEquals(200, jugador.obtenerDineroDisponible(), 0.0001);
-        assertEquals(4, nivel.obtenerSpawnsPendientes().size());
+        assertEquals(150, jugador.obtenerDineroDisponible(), 0.0001);
+        assertEquals(17, nivel.obtenerSpawnsPendientes().size());
         assertEquals(0, nivel.obtenerTorretasInstaladas().size());
     }
 

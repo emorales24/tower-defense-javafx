@@ -18,7 +18,7 @@ class ProyectilTest {
     void proyectilImpactaAlObjetivoYSeDesactiva() {
         Ruta ruta = new Ruta(List.of(new Posicion(0, 0), new Posicion(100, 0)));
         Enemigo enemigo = new EnemigoDebil(ruta);
-        Proyectil proyectil = new Proyectil(new Posicion(0, 0), enemigo, 300, 1, new Dimension(8, 8));
+        Proyectil proyectil = new Proyectil(new Posicion(0, 0), enemigo, 300, 3, new Dimension(8, 8));
 
         proyectil.actualizar(0.5);
 
@@ -30,8 +30,8 @@ class ProyectilTest {
     void proyectilSeDesactivaSiElObjetivoYaNoEstaActivo() {
         Ruta ruta = new Ruta(List.of(new Posicion(0, 0), new Posicion(100, 0)));
         Enemigo enemigo = new EnemigoDebil(ruta);
-        enemigo.recibirDanio(1);
-        Proyectil proyectil = new Proyectil(new Posicion(0, 0), enemigo, 300, 1, new Dimension(8, 8));
+        enemigo.recibirDanio(3);
+        Proyectil proyectil = new Proyectil(new Posicion(0, 0), enemigo, 300, 3, new Dimension(8, 8));
 
         proyectil.actualizar(0.1);
 
