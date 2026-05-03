@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nivel ancho="800" alto="600" dineroInicial="230">
+<nivel ancho="800" alto="600" dineroInicial="200">
     <spawn x="0" y="100"/>
-    <baseJugador x="760" y="500" vida="22"/>
+    <baseJugador x="760" y="500" vida="50"/>
 
     <ruta ancho="32">
         <punto orden="1" x="0" y="100"/>
@@ -29,20 +29,23 @@
         <enemigo tipo="DEBIL" tiempo="1"/>
         <enemigo tipo="MEDIO" tiempo="3"/>
         <enemigo tipo="DEBIL" tiempo="5"/>
-        <enemigo tipo="MEDIO" tiempo="8"/>
-        <enemigo tipo="MEDIO" tiempo="11"/>
-        <enemigo tipo="FUERTE" tiempo="15"/>
-        <enemigo tipo="DEBIL" tiempo="19"/>
-        <enemigo tipo="MEDIO" tiempo="22"/>
-        <enemigo tipo="FUERTE" tiempo="27"/>
-        <enemigo tipo="MEDIO" tiempo="32"/>
-        <enemigo tipo="MEDIO" tiempo="37"/>
-        <enemigo tipo="FUERTE" tiempo="43"/>
-        <enemigo tipo="DEBIL" tiempo="48"/>
-        <enemigo tipo="FUERTE" tiempo="54"/>
-        <enemigo tipo="MEDIO" tiempo="60"/>
-        <enemigo tipo="FUERTE" tiempo="67"/>
-        <enemigo tipo="FUERTE" tiempo="75"/>
+        <enemigo tipo="MEDIO" tiempo="7.5"/>
+        <enemigo tipo="DEBIL" tiempo="10"/>
+        <enemigo tipo="MEDIO" tiempo="12.5"/>
+        <enemigo tipo="MEDIO" tiempo="15"/>
+        <enemigo tipo="FUERTE" tiempo="18"/>
+        <enemigo tipo="DEBIL" tiempo="21"/>
+        <enemigo tipo="DEBIL" tiempo="22"/>
+        <enemigo tipo="MEDIO" tiempo="24.5"/>
+        <enemigo tipo="FUERTE" tiempo="28"/>
+        <enemigo tipo="MEDIO" tiempo="31"/>
+        <enemigo tipo="FUERTE" tiempo="35"/>
+        <enemigo tipo="MEDIO" tiempo="38"/>
+        <enemigo tipo="FUERTE" tiempo="41"/>
+        <enemigo tipo="MEDIO" tiempo="44"/>
+        <enemigo tipo="FUERTE" tiempo="47"/>
+        <enemigo tipo="FUERTE" tiempo="50"/>
+        <enemigo tipo="FUERTE" tiempo="53"/>
     </enemigos>
 
     <torretasIniciales/>
