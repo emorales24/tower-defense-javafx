@@ -56,16 +56,11 @@ public class App extends Application {
                 nivelSiguiente -> {
                     int nivelRealSiguiente = nivelInicialActual + nivelSiguiente - 1;
                     desbloquearHasta(nivelRealSiguiente);
-                    mostrarAlerta("Victoria", "Nivel completado. Sigue el nivel " + nivelRealSiguiente);
                 },
                 () -> {
-                    mostrarAlerta("Derrota", "La base fue destruida");
-                    mostrarMenu();
                 },
                 () -> {
                     desbloquearHasta(CANTIDAD_NIVELES);
-                    mostrarAlerta("Victoria final", "Felicitaciones, ganaste el juego");
-                    mostrarMenu();
                 },
                 this::mostrarMenu
         );
