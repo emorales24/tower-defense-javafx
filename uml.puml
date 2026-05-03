@@ -1,4 +1,4 @@
-@startuml
+@startuml modelo_tp1_paradigmas
 hide empty members
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
@@ -328,12 +328,15 @@ Modelo.torreta.Torreta <|-- Modelo.torreta.TorretaDistante
 ' --- RELACIONES PRINCIPALES ---
 
 Modelo.Juego o-- Modelo.Jugador
-Modelo.Juego *-- "1..*" Modelo.nivel.Nivel
+Modelo.Juego o-- "1..*" Modelo.nivel.Nivel
 Modelo.Juego --> Modelo.EstadoJuego
 
-Modelo.nivel.Nivel *-- Modelo.escena.Escenario
-Modelo.nivel.Nivel --> Modelo.Jugador
-Modelo.nivel.Nivel *-- "0..*" Modelo.nivel.SpawnEnemigo
+Modelo.nivel.Nivel o-- Modelo.escena.Escenario
+Modelo.nivel.Nivel o-- Modelo.Jugador
+Modelo.nivel.Nivel o-- "0..*" Modelo.nivel.SpawnEnemigo : configurados
+Modelo.nivel.Nivel o-- "0..*" Modelo.nivel.SpawnEnemigo : pendientes
+Modelo.nivel.Nivel o-- "0..*" Modelo.escena.Slot
+Modelo.nivel.Nivel ..> Modelo.torreta.TipoTorreta
 Modelo.nivel.Nivel *-- "0..*" Modelo.enemigo.Enemigo
 Modelo.nivel.Nivel *-- "0..*" Modelo.proyectil.Proyectil
 Modelo.nivel.Nivel *-- "0..*" Modelo.torreta.Torreta
@@ -341,46 +344,51 @@ Modelo.nivel.Nivel *-- "0..*" Modelo.nivel.EventoEnemigoEliminado
 Modelo.nivel.Nivel *-- Modelo.enemigo.FabricaEnemigo
 Modelo.nivel.Nivel *-- Modelo.torreta.FabricaTorreta
 Modelo.nivel.Nivel --> Modelo.nivel.EstadoNivel
-Modelo.nivel.Nivel ..> Modelo.torreta.TipoTorreta
-Modelo.nivel.Nivel ..> Modelo.escena.Slot
 
-Modelo.escena.Escenario *-- Modelo.escena.Ruta
-Modelo.escena.Escenario *-- Modelo.escena.Base
-Modelo.escena.Escenario *-- "0..*" Modelo.escena.Slot
-Modelo.escena.Escenario *-- Modelo.geometria.Posicion
+Modelo.escena.Escenario o-- Modelo.escena.Ruta
+Modelo.escena.Escenario o-- Modelo.escena.Base
+Modelo.escena.Escenario o-- "0..*" Modelo.escena.Slot
+Modelo.escena.Escenario o-- Modelo.geometria.Posicion : puntoSpawn
 
-Modelo.escena.Base *-- Modelo.geometria.Posicion
-Modelo.escena.Ruta *-- "2..*" Modelo.geometria.Posicion
-Modelo.escena.Slot *-- Modelo.geometria.Posicion
-Modelo.escena.Slot *-- Modelo.geometria.Dimension
+Modelo.escena.Base o-- Modelo.geometria.Posicion
+Modelo.escena.Ruta o-- "2..*" Modelo.geometria.Posicion
+Modelo.escena.Slot o-- Modelo.geometria.Posicion
+Modelo.escena.Slot o-- Modelo.geometria.Dimension
 
-Modelo.geometria.Caja *-- Modelo.geometria.Posicion
-Modelo.geometria.Caja *-- Modelo.geometria.Dimension
+Modelo.geometria.Caja o-- Modelo.geometria.Posicion
+Modelo.geometria.Caja o-- Modelo.geometria.Dimension
 
-Modelo.enemigo.Enemigo *-- Modelo.escena.Ruta
-Modelo.enemigo.Enemigo *-- Modelo.geometria.Posicion
-Modelo.enemigo.Enemigo *-- Modelo.geometria.Dimension
+Modelo.enemigo.Enemigo o-- Modelo.escena.Ruta
+Modelo.enemigo.Enemigo o-- Modelo.geometria.Posicion
+Modelo.enemigo.Enemigo o-- Modelo.geometria.Dimension
 Modelo.enemigo.Enemigo --> Modelo.enemigo.TipoEnemigo
 
 Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.TipoEnemigo
 Modelo.enemigo.FabricaEnemigo ..> Modelo.escena.Ruta
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.EnemigoDebil
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.EnemigoMedio
+Modelo.enemigo.FabricaEnemigo ..> Modelo.enemigo.EnemigoFuerte
 
-Modelo.torreta.Torreta *-- Modelo.geometria.Posicion
-Modelo.torreta.Torreta *-- Modelo.geometria.Dimension
+Modelo.torreta.Torreta o-- Modelo.geometria.Posicion
+Modelo.torreta.Torreta o-- Modelo.geometria.Dimension
 Modelo.torreta.Torreta --> Modelo.torreta.TipoTorreta
 Modelo.torreta.Torreta ..> Modelo.enemigo.Enemigo
 Modelo.torreta.Torreta ..> Modelo.proyectil.Proyectil
 
 Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TipoTorreta
 Modelo.torreta.FabricaTorreta ..> Modelo.geometria.Posicion
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaSimple
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaRapida
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaPotente
+Modelo.torreta.FabricaTorreta ..> Modelo.torreta.TorretaDistante
 
-Modelo.proyectil.Proyectil *-- Modelo.geometria.Posicion
-Modelo.proyectil.Proyectil *-- Modelo.geometria.Dimension
+Modelo.proyectil.Proyectil o-- Modelo.geometria.Posicion
+Modelo.proyectil.Proyectil o-- Modelo.geometria.Dimension
 Modelo.proyectil.Proyectil --> Modelo.enemigo.Enemigo
 Modelo.proyectil.Proyectil --> Modelo.torreta.TipoTorreta
 
 Modelo.nivel.SpawnEnemigo --> Modelo.enemigo.TipoEnemigo
-Modelo.nivel.EventoEnemigoEliminado *-- Modelo.geometria.Posicion
+Modelo.nivel.EventoEnemigoEliminado o-- Modelo.geometria.Posicion
 Modelo.nivel.EventoEnemigoEliminado --> Modelo.enemigo.TipoEnemigo
 
 @enduml
