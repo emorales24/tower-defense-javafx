@@ -32,6 +32,7 @@ public class VistaJuego {
     private TipoTorreta tipoSeleccionado;
     private Slot slotResaltado;
     private int ultimoNivelMostrado;
+    private boolean pausado;
     private AnimationTimer loopActualizacion;
     private AnimationTimer loopRender;
 
@@ -51,7 +52,8 @@ public class VistaJuego {
         this.tipoSeleccionado = TipoTorreta.SIMPLE;
         this.slotResaltado = null;
         this.ultimoNivelMostrado = juego.obtenerIndiceNivelActual();
-        this.barra = new BarraJuego(this::alternarAudio, this::reiniciarNivelActual, this::volverAlMenu);
+        this.pausado = false;
+        this.barra = new BarraJuego(this::alternarAudio, this::alternarPausa, this::reiniciarNivelActual, this::volverAlMenu);
         this.selectorTorretas = new SelectorTorretas(this::seleccionarTorreta);
         this.renderizador = new RenderizadorJuego(canvas);
         this.raiz = crearRaiz();
@@ -94,6 +96,8 @@ public class VistaJuego {
     private void reiniciarNivelActual() {
         juego.obtenerNivelActual().iniciar();
         slotResaltado = null;
+        pausado = false;
+        barra.actualizarPausa(pausado);
         barra.mostrarMensaje("Nivel reiniciado");
         dibujar();
     }
@@ -101,6 +105,13 @@ public class VistaJuego {
     private void alternarAudio() {
         audio.alternarMute();
         barra.actualizarAudio(audio.estaMuteado());
+    }
+
+    private void alternarPausa() {
+        pausado = !pausado;
+        barra.actualizarPausa(pausado);
+        barra.mostrarMensaje(pausado ? "Juego pausado" : "");
+        dibujar();
     }
 
     private void volverAlMenu() {
@@ -123,7 +134,7 @@ public class VistaJuego {
         });
 
         canvas.setOnMouseClicked(evento -> {
-            if (juego.obtenerEstado() != EstadoJuego.EN_CURSO) {
+            if (pausado || juego.obtenerEstado() != EstadoJuego.EN_CURSO) {
                 return;
             }
 
@@ -165,6 +176,12 @@ public class VistaJuego {
 
             @Override
             public void handle(long ahora) {
+                if (pausado) {
+                    ultimoTiempo = ahora;
+                    tiempoAcumulado = 0;
+                    return;
+                }
+
                 if (ultimoTiempo == 0) {
                     ultimoTiempo = ahora;
                     return;
@@ -232,6 +249,8 @@ public class VistaJuego {
         juego.avanzarAlSiguienteNivel();
         ultimoNivelMostrado = juego.obtenerIndiceNivelActual();
         slotResaltado = null;
+        pausado = false;
+        barra.actualizarPausa(pausado);
         ajustarCanvasAlNivelActual();
         barra.mostrarMensaje("Nivel " + (ultimoNivelMostrado + 1));
         dibujar();

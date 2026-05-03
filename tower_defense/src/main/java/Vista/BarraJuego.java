@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 public class BarraJuego {
     private static final double ALTO = 48;
     private static final double ANCHO_BOTON_AUDIO = 58;
+    private static final double ANCHO_BOTON_PAUSA = 78;
     private static final double ANCHO_BOTON_REINICIAR = 82;
     private static final double ANCHO_BOTON_MENU = 62;
     private static final double TAMANIO_ICONO_ESTADO = 24;
@@ -28,10 +29,11 @@ public class BarraJuego {
     private final Label puntaje;
     private final Label mensaje;
     private final Button botonAudio;
+    private final Button botonPausa;
     private boolean audioMuteado;
 
-    public BarraJuego(Runnable alAlternarAudio, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
-        if (alAlternarAudio == null || alReiniciarNivel == null || alVolverAlMenu == null) {
+    public BarraJuego(Runnable alAlternarAudio, Runnable alAlternarPausa, Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
+        if (alAlternarAudio == null || alAlternarPausa == null || alReiniciarNivel == null || alVolverAlMenu == null) {
             throw new IllegalArgumentException("Las acciones de la barra no pueden ser null");
         }
 
@@ -41,6 +43,7 @@ public class BarraJuego {
         this.puntaje = new Label();
         this.mensaje = new Label();
         this.botonAudio = crearBotonAccion("Audio", "Mutear audio", ANCHO_BOTON_AUDIO, alAlternarAudio);
+        this.botonPausa = crearBotonAccion("Pausa", "Pausar juego", ANCHO_BOTON_PAUSA, alAlternarPausa);
         this.audioMuteado = false;
         this.raiz = crearRaiz(alReiniciarNivel, alVolverAlMenu);
         actualizarBotones();
@@ -70,6 +73,11 @@ public class BarraJuego {
         botonAudio.setTooltip(new Tooltip(muteado ? "Activar audio" : "Mutear audio"));
     }
 
+    public void actualizarPausa(boolean pausado) {
+        botonPausa.setText(pausado ? "Reanudar" : "Pausa");
+        botonPausa.setTooltip(new Tooltip(pausado ? "Reanudar juego" : "Pausar juego"));
+    }
+
     private HBox crearRaiz(Runnable alReiniciarNivel, Runnable alVolverAlMenu) {
         HBox barra = new HBox(10);
         barra.setMinHeight(ALTO);
@@ -94,6 +102,7 @@ public class BarraJuego {
                 crearIndicador(assets.obtenerPuntaje(), puntaje, "Puntaje acumulado"),
                 mensaje,
                 espacioFlexible,
+                botonPausa,
                 botonAudio,
                 crearBotonAccion("Reiniciar", "Reiniciar nivel", ANCHO_BOTON_REINICIAR, alReiniciarNivel),
                 crearBotonAccion("Menu", "Volver al menu", ANCHO_BOTON_MENU, alVolverAlMenu)

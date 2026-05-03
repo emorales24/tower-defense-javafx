@@ -10,7 +10,6 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.InputStream;
@@ -18,14 +17,11 @@ import java.util.function.IntConsumer;
 
 public class VistaMenu {
     private static final int CANTIDAD_NIVELES = 3;
-    private static final double ANCHO_BOTON_NIVEL = 150;
-    private static final double ANCHO_BOTON_SALIR = 180;
+    private static final double ANCHO_BOTON_MENU = 180;
     private static final double ALTO_BOTON = 42;
     private static final String ESTILO_TITULO = "-fx-font-size: 42; -fx-font-weight: bold; -fx-text-fill: #f3f0df;";
-    private static final String ESTILO_SUBTITULO = "-fx-font-size: 17; -fx-font-weight: bold; -fx-text-fill: #d9d2b0;";
     private static final String ESTILO_BOTON = "-fx-background-color: #30363f; -fx-text-fill: #f4f0df; -fx-font-weight: bold; -fx-background-radius: 6; -fx-border-color: #7c8a74; -fx-border-radius: 6;";
     private static final String ESTILO_BOTON_HOVER = "-fx-background-color: #46505d; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-background-radius: 6; -fx-border-color: #f5f0a6; -fx-border-radius: 6;";
-    private static final String ESTILO_BOTON_BLOQUEADO = "-fx-background-color: #3b3f45; -fx-text-fill: #8f958a; -fx-font-weight: bold; -fx-background-radius: 6; -fx-border-color: #555a54; -fx-border-radius: 6;";
 
     private final VBox raiz;
 
@@ -49,32 +45,19 @@ public class VistaMenu {
         Label titulo = new Label("Tower Defense");
         titulo.setStyle(ESTILO_TITULO);
 
-        Label subtitulo = new Label("Seleccionar nivel");
-        subtitulo.setStyle(ESTILO_SUBTITULO);
-
-        HBox niveles = new HBox(12);
-        niveles.setAlignment(Pos.CENTER);
-        for (int nivel = 1; nivel <= CANTIDAD_NIVELES; nivel++) {
-            niveles.getChildren().add(crearBotonNivel(nivel, nivelMaximoDesbloqueado, alSeleccionarNivel));
-        }
+        Button empezar = crearBoton("Empezar", true);
+        empezar.setPrefWidth(ANCHO_BOTON_MENU);
+        empezar.setOnAction(evento -> alSeleccionarNivel.accept(nivelMaximoDesbloqueado));
 
         Button salir = crearBoton("Salir", true);
-        salir.setPrefWidth(ANCHO_BOTON_SALIR);
+        salir.setPrefWidth(ANCHO_BOTON_MENU);
         salir.setOnAction(evento -> alSalir.run());
 
-        VBox contenedor = new VBox(20, titulo, subtitulo, niveles, salir);
+        VBox contenedor = new VBox(20, titulo, empezar, salir);
         contenedor.setAlignment(Pos.CENTER);
         contenedor.setPadding(new Insets(32));
         contenedor.setBackground(crearFondo());
         return contenedor;
-    }
-
-    private Button crearBotonNivel(int nivel, int nivelMaximoDesbloqueado, IntConsumer alSeleccionarNivel) {
-        boolean desbloqueado = nivel <= nivelMaximoDesbloqueado;
-        Button boton = crearBoton(desbloqueado ? "Nivel " + nivel : "Nivel " + nivel + " bloqueado", desbloqueado);
-        boton.setPrefWidth(ANCHO_BOTON_NIVEL);
-        boton.setOnAction(evento -> alSeleccionarNivel.accept(nivel));
-        return boton;
     }
 
     private Button crearBoton(String texto, boolean habilitado) {
@@ -83,7 +66,7 @@ public class VistaMenu {
         boton.setMinHeight(ALTO_BOTON);
         boton.setPrefHeight(ALTO_BOTON);
         boton.setDisable(!habilitado);
-        boton.setStyle(habilitado ? ESTILO_BOTON : ESTILO_BOTON_BLOQUEADO);
+        boton.setStyle(ESTILO_BOTON);
 
         if (habilitado) {
             boton.setOnMouseEntered(evento -> boton.setStyle(ESTILO_BOTON_HOVER));
