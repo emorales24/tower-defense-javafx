@@ -9,7 +9,7 @@
 
 ### Integrantes del Grupo
 - Eduardo José Morales Depablos 113860 [vídeo]() agregar
-- Fausto Giannotti 113365 [vídeo](https://drive.google.com/file/d/1sQXP9Iv9a_LlwrfNxOJSJyUN4Nx3mFgU/view?usp=drive_link)
+- Fausto Giannotti 113365 - [Vídeo](https://drive.google.com/file/d/1sQXP9Iv9a_LlwrfNxOJSJyUN4Nx3mFgU/view?usp=drive_link)
 
 ### Descripción del Proyecto
 Este proyecto es un Tower Defense hecho en Java y JavaFX como Trabajo Práctico 1 de la materia Paradigmas de Programación.
