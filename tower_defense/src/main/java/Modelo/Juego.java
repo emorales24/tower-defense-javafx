@@ -60,6 +60,11 @@ public class Juego {
         estado = EstadoJuego.EN_CURSO;
     }
 
+    public void reiniciarNivelActual() {
+        obtenerNivelActual().iniciar();
+        estado = EstadoJuego.EN_CURSO;
+    }
+
     public Jugador obtenerJugador() {
         return jugador;
     }
