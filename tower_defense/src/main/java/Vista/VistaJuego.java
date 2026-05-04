@@ -170,8 +170,8 @@ public class VistaJuego {
         Label titulo = new Label("Pausa");
         titulo.setStyle(ESTILO_TITULO_PAUSA);
 
-        Button resume = crearBotonModal("Resume");
-        resume.setOnAction(evento -> {
+        Button resumir = crearBotonModal("Resumir");
+        resumir.setOnAction(evento -> {
             reanudarJuego();
             modal.close();
         });
@@ -188,7 +188,7 @@ public class VistaJuego {
             volverAlMenu();
         });
 
-        VBox contenido = new VBox(14, titulo, crearIconoPausaModal(), resume, reiniciar, menu);
+        VBox contenido = new VBox(14, titulo, crearIconoPausaModal(), resumir, reiniciar, menu);
         contenido.setAlignment(Pos.CENTER);
         contenido.setPadding(new Insets(24));
         contenido.setStyle(ESTILO_MODAL_PAUSA);

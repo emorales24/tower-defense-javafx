@@ -45,15 +45,23 @@ public class VistaMenu {
         Label titulo = new Label("Tower Defense");
         titulo.setStyle(ESTILO_TITULO);
 
-        Button empezar = crearBoton("Empezar", true);
-        empezar.setPrefWidth(ANCHO_BOTON_MENU);
-        empezar.setOnAction(evento -> alSeleccionarNivel.accept(nivelMaximoDesbloqueado));
+        VBox selectorNiveles = new VBox(10);
+        selectorNiveles.setAlignment(Pos.CENTER);
+
+        for (int nivel = 1; nivel <= CANTIDAD_NIVELES; nivel++) {
+            int nivelSeleccionado = nivel;
+            boolean desbloqueado = nivel <= nivelMaximoDesbloqueado;
+            Button botonNivel = crearBoton("Nivel " + nivel, desbloqueado);
+            botonNivel.setPrefWidth(ANCHO_BOTON_MENU);
+            botonNivel.setOnAction(evento -> alSeleccionarNivel.accept(nivelSeleccionado));
+            selectorNiveles.getChildren().add(botonNivel);
+        }
 
         Button salir = crearBoton("Salir", true);
         salir.setPrefWidth(ANCHO_BOTON_MENU);
         salir.setOnAction(evento -> alSalir.run());
 
-        VBox contenedor = new VBox(20, titulo, empezar, salir);
+        VBox contenedor = new VBox(20, titulo, selectorNiveles, salir);
         contenedor.setAlignment(Pos.CENTER);
         contenedor.setPadding(new Insets(32));
         contenedor.setBackground(crearFondo());
