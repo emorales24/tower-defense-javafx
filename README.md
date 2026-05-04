@@ -11,6 +11,8 @@
 - Eduardo José Morales Depablos 113860 [vídeo]() agregar
 - Fausto Giannotti 113365 - [Vídeo](https://drive.google.com/file/d/1sQXP9Iv9a_LlwrfNxOJSJyUN4Nx3mFgU/view?usp=drive_link)
 
+UML: https://drive.google.com/file/d/1DuQoeJw0ANctF8eKtgLLJhZ86Iy6QXgv
+
 ### Descripción del Proyecto
 Este proyecto es un Tower Defense hecho en Java y JavaFX como Trabajo Práctico 1 de la materia Paradigmas de Programación.
 
