@@ -8,7 +8,7 @@
 - **Corrector:** ...  
 
 ### Integrantes del Grupo
-- Eduardo José Morales Depablos 113860 [vídeo]() agregar
+- Eduardo José Morales Depablos 113860 [vídeo](https://drive.google.com/file/d/1_YDnvidYuSMifI2I6YSBrQntbc1MhZBP/view?usp=sharing)
 - Fausto Giannotti 113365 - [Vídeo](https://drive.google.com/file/d/1sQXP9Iv9a_LlwrfNxOJSJyUN4Nx3mFgU/view?usp=drive_link)
 
 UML: https://drive.google.com/file/d/1DuQoeJw0ANctF8eKtgLLJhZ86Iy6QXgv
